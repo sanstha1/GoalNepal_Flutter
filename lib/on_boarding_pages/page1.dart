@@ -5,16 +5,54 @@ class Page1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.green,
-      child: const Center(
-        child: Text(
-          'Page 1',
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+    return Scaffold(
+      backgroundColor: Colors.blueGrey,
+      body: SafeArea(
+        child: Column(
+        children: [
+          const SizedBox(height: 50),
+          Image.asset('assets/images/logo.png'),
+          const SizedBox(height: 20),
+          
+          RichText(
+            textAlign: TextAlign.center,
+          text: const TextSpan(
+            children: [
+              TextSpan(text:'Your',
+              style: TextStyle(
+                fontSize: 45,
+                color: Colors.black,
+                letterSpacing: 10
+              ),
+              ),
+              TextSpan(
+                text: 'Game,',
+                style: TextStyle(
+                  fontSize: 80,
+                  letterSpacing: 10
+                )
+              ),
+              TextSpan(
+                  text: 'Your',
+                  style: TextStyle(
+                      fontSize: 45,
+                    color: Colors.black,
+                    letterSpacing: 10
+                  )
+              ),
+              TextSpan(
+                  text: 'Stage!',
+                  style: TextStyle(
+                      fontSize: 80,
+                    letterSpacing: 10
+                  )
+              )
+            ]
+          ),)
+
+          
+        ],
+      ),
       ),
     );
   }

@@ -12,9 +12,14 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-
-  //Indicates which page we are on
   final PageController _controller = PageController();
+  int currentPage = 0;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,16 +28,61 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         children: [
           PageView(
             controller: _controller,
+            onPageChanged: (index) {
+              setState(() {
+                currentPage = index;
+              });
+            },
             children: [
               Page1(),
               Page2(),
-              Page3()
+              Page3(
+                onGetStarted: () {
+                  Navigator.pushReplacementNamed(context, '/home');
+                },
+              ),
             ],
           ),
-          Container(
-            alignment: Alignment(0,0.8),
-              child: SmoothPageIndicator(
-                  controller: _controller, count: 3))
+
+          // Bottom navigation row
+          Align(
+            alignment: Alignment(0, 0.85),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Previous button (only page 2 and 3)
+                if (currentPage != 0)
+                  GestureDetector(
+                    onTap: () {
+                      _controller.previousPage(
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeIn,
+                      );
+                    },
+                    child: const Text('Previous', style: TextStyle(fontSize: 16)),
+                  )
+                else
+                  const SizedBox(width: 70), // placeholder for alignment
+
+                // Dot indicator (show on all pages)
+                SmoothPageIndicator(controller: _controller, count: 3),
+
+                // Next button (page 1 and 2 only)
+                if (currentPage != 2)
+                  GestureDetector(
+                    onTap: () {
+                      _controller.nextPage(
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeIn,
+                      );
+                    },
+                    child: const Text('Next', style: TextStyle(fontSize: 16)),
+                  )
+                else
+                  const SizedBox(width: 70), // placeholder to balance layout
+              ],
+            ),
+          ),
         ],
       ),
     );
