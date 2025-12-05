@@ -50,7 +50,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Previous button (only page 2 and 3)
+
                 if (currentPage != 0)
                   GestureDetector(
                     onTap: () {
