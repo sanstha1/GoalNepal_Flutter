@@ -44,12 +44,12 @@ class LoginScreen extends StatelessWidget {
 
                       const SizedBox(height: 30),
 
-                      // EMAIL FIELD
+
                       _inputField("Enter your email"),
 
                       const SizedBox(height: 20),
 
-                      // PASSWORD FIELD
+
                       _inputField("Enter your password", obscure: true),
 
                       const SizedBox(height: 10),
@@ -70,7 +70,7 @@ class LoginScreen extends StatelessWidget {
 
                       const SizedBox(height: 25),
 
-                      // LOGIN BUTTON
+
                       MyButton(
                         text: "LOGIN",
                         onPressed: () {
