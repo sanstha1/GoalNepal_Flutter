@@ -12,6 +12,8 @@ class Page1 extends StatelessWidget {
         children: [
           const SizedBox(height: 50),
           Image.asset('assets/images/logo.png'),
+
+
           const SizedBox(height: 20),
           
           RichText(

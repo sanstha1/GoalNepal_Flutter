@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goal_nepal/mycolors.dart';
 import 'package:goal_nepal/widgets/my_button.dart';
 
 class Page3 extends StatelessWidget {
@@ -9,23 +10,48 @@ class Page3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.lightBlueAccent,
+      color: MyColors.darkGray,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Spacer(flex: 2), // top spacing
-          const Center(
+          const Spacer(flex: 1),
+
+          ClipOval(
+            child: Image.asset(
+              'assets/images/tournament.jpg',
+              width: 260,
+              height: 260,
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          const SizedBox(height: 40),
+
+          const Text(
+            "Manage Tournaments Easily",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              "Page 3",
+              "Create tournaments, manage teams, and track live scores all in one place.",
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Colors.white70,
               ),
             ),
           ),
-          const Spacer(), // spacing between text and button
 
-          // Get Started button
+          const Spacer(),
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: MyButton(
@@ -34,7 +60,7 @@ class Page3 extends StatelessWidget {
             ),
           ),
 
-          const Spacer(flex: 1), // spacing below button for dot indicator
+          const Spacer(flex: 1),
         ],
       ),
     );
