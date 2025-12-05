@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:goal_nepal/mycolors.dart';
 import 'package:goal_nepal/widgets/my_button.dart';
 
-class Page3 extends StatelessWidget {
-  final VoidCallback onGetStarted;
+import '../screens/login_screen.dart';
 
-  const Page3({super.key, required this.onGetStarted});
+
+class Page3 extends StatelessWidget {
+  const Page3({super.key, required Null Function() onGetStarted});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +57,13 @@ class Page3 extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: MyButton(
               text: 'Get Started',
-              onPressed: onGetStarted,
+              onPressed: () {
+                // Navigate to LoginScreen when button is pressed
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                );
+              },
             ),
           ),
 

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:goal_nepal/screens/register_screen.dart';
 import 'package:goal_nepal/widgets/my_button.dart';
-// import 'register_screen.dart';
+import 'login_screen.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -45,16 +44,14 @@ class LoginScreen extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      // LOGO
                       Image.asset(
                         "assets/images/logo.png",
                         height: 120,
                       ),
                       const SizedBox(height: 20),
 
-                      // TITLE
                       const Text(
-                        "LOGIN",
+                        "Register",
                         style: TextStyle(
                           color: Color(0xFFFDFCCB),
                           fontSize: 26,
@@ -64,66 +61,49 @@ class LoginScreen extends StatelessWidget {
 
                       const SizedBox(height: 30),
 
-                      // EMAIL FIELD
-                      _inputField("Enter your email"),
+                      _inputField("Full Name"),
+                      const SizedBox(height: 18),
 
-                      const SizedBox(height: 20),
+                      _inputField("Email"),
+                      const SizedBox(height: 18),
 
-                      // PASSWORD FIELD
-                      _inputField("Enter your password", obscure: true),
+                      _inputField("Password", obscure: true),
+                      const SizedBox(height: 18),
 
-                      const SizedBox(height: 10),
-
-                      const Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 35),
-                          child: Text(
-                            "Forgot Password?",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 25),
+                      _inputField("Confirm Password", obscure: true),
+                      const SizedBox(height: 30),
 
 
                       MyButton(
-                        text: "LOGIN", onPressed: () {  },
+                        text: "SIGN UP", onPressed: () {  },
                       ),
 
                       const SizedBox(height: 30),
 
                       _divider(),
-
                       const SizedBox(height: 20),
 
                       _socialRow(),
-
                       const SizedBox(height: 30),
 
-                      // SIGN UP
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            "Don’t have an account?",
+                            "Already have an account?",
                             style: TextStyle(color: Colors.white),
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const RegisterScreen(),
+                                  builder: (_) => const LoginScreen(),
                                 ),
                               );
                             },
                             child: const Text(
-                              "  Sign Up",
+                              "  LOG IN",
                               style: TextStyle(
                                 color: Color(0xFFFDFCCB),
                                 fontWeight: FontWeight.bold,
@@ -132,11 +112,12 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ],
                       ),
+
                       const SizedBox(height: 20),
                     ],
                   ),
                 ),
-              ),
+              )
             ],
           ),
         ),
@@ -144,14 +125,13 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  // COMMON TEXTFIELD
   Widget _inputField(String hint, {bool obscure = false}) {
     return Container(
       width: 300,
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: TextField(
         obscureText: obscure,
@@ -163,7 +143,6 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  // DIVIDER
   Widget _divider() {
     return Row(
       children: [
@@ -180,14 +159,13 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  // SOCIAL ICON ROW
   Widget _socialRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: const [
-        Icon(Icons.person, size: 40, color: Colors.white), // replace with GitHub logo
+        Icon(Icons.person, size: 40, color: Colors.white),
         SizedBox(width: 25),
-        Icon(Icons.person, size: 40, color: Colors.white), // replace with LinkedIn logo
+        Icon(Icons.person, size: 40, color: Colors.white),
       ],
     );
   }
