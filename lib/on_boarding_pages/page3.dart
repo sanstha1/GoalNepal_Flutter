@@ -58,7 +58,6 @@ class Page3 extends StatelessWidget {
             child: MyButton(
               text: 'Get Started',
               onPressed: () {
-                // Navigate to LoginScreen when button is pressed
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (_) => const LoginScreen()),

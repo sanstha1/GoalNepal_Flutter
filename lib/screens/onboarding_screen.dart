@@ -44,7 +44,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ],
           ),
 
-          // Bottom navigation row
+
           Align(
             alignment: Alignment(0, 0.85),
             child: Row(
@@ -62,12 +62,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: const Text('Previous', style: TextStyle(fontSize: 16)),
                   )
                 else
-                  const SizedBox(width: 70), // placeholder for alignment
+                  const SizedBox(width: 70),
 
-                // Dot indicator (show on all pages)
+
                 SmoothPageIndicator(controller: _controller, count: 3),
 
-                // Next button (page 1 and 2 only)
+
                 if (currentPage != 2)
                   GestureDetector(
                     onTap: () {
@@ -79,7 +79,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: const Text('Next', style: TextStyle(fontSize: 16)),
                   )
                 else
-                  const SizedBox(width: 70), // placeholder to balance layout
+                  const SizedBox(width: 70),
               ],
             ),
           ),

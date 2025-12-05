@@ -22,33 +22,15 @@ class RegisterScreen extends StatelessWidget {
         child: SafeArea(
           child: Stack(
             children: [
-              // SIDE TEXT
-              Positioned(
-                left: -70,
-                top: 120,
-                child: Transform.rotate(
-                  angle: -1.57,
-                  child: const Text(
-                    "Your Game, Your Platform.",
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-
-              // MAIN CONTENT
               Center(
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
                       Image.asset(
                         "assets/images/logo.png",
-                        height: 120,
+                        height: 280,
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
 
                       const Text(
                         "Register",
@@ -73,9 +55,9 @@ class RegisterScreen extends StatelessWidget {
                       _inputField("Confirm Password", obscure: true),
                       const SizedBox(height: 30),
 
-
                       MyButton(
-                        text: "SIGN UP", onPressed: () {  },
+                        text: "SIGN UP",
+                        onPressed: () {},
                       ),
 
                       const SizedBox(height: 30),
@@ -162,10 +144,28 @@ class RegisterScreen extends StatelessWidget {
   Widget _socialRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
-        Icon(Icons.person, size: 40, color: Colors.white),
-        SizedBox(width: 25),
-        Icon(Icons.person, size: 40, color: Colors.white),
+      children: [
+        GestureDetector(
+          onTap: () {
+
+          },
+          child: Image.asset(
+            'assets/icons/github.png',
+            width: 40,
+            height: 40,
+          ),
+        ),
+        const SizedBox(width: 25),
+        GestureDetector(
+          onTap: () {
+
+          },
+          child: Image.asset(
+            'assets/icons/google.png',
+            width: 40,
+            height: 40,
+          ),
+        ),
       ],
     );
   }

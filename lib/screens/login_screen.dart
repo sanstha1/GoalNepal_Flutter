@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:goal_nepal/screens/register_screen.dart';
+import 'package:goal_nepal/screens/home_screen.dart';
 import 'package:goal_nepal/widgets/my_button.dart';
-// import 'register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -23,36 +23,16 @@ class LoginScreen extends StatelessWidget {
         child: SafeArea(
           child: Stack(
             children: [
-              // SIDE TEXT
-              Positioned(
-                left: -70,
-                top: 120,
-                child: Transform.rotate(
-                  angle: -1.57,
-                  child: const Text(
-                    "Your Game, Your Platform.",
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-
-              // MAIN CONTENT
               Center(
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      // LOGO
                       Image.asset(
                         "assets/images/logo.png",
-                        height: 120,
+                        height: 350,
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 0),
 
-                      // TITLE
                       const Text(
                         "LOGIN",
                         style: TextStyle(
@@ -77,7 +57,7 @@ class LoginScreen extends StatelessWidget {
                       const Align(
                         alignment: Alignment.centerRight,
                         child: Padding(
-                          padding: EdgeInsets.only(right: 35),
+                          padding: EdgeInsets.only(right: 65),
                           child: Text(
                             "Forgot Password?",
                             style: TextStyle(
@@ -90,9 +70,17 @@ class LoginScreen extends StatelessWidget {
 
                       const SizedBox(height: 25),
 
-
+                      // LOGIN BUTTON
                       MyButton(
-                        text: "LOGIN", onPressed: () {  },
+                        text: "LOGIN",
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const HomeScreen(),
+                            ),
+                          );
+                        },
                       ),
 
                       const SizedBox(height: 30),
@@ -105,7 +93,6 @@ class LoginScreen extends StatelessWidget {
 
                       const SizedBox(height: 30),
 
-                      // SIGN UP
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -144,7 +131,6 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  // COMMON TEXTFIELD
   Widget _inputField(String hint, {bool obscure = false}) {
     return Container(
       width: 300,
@@ -163,7 +149,6 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  // DIVIDER
   Widget _divider() {
     return Row(
       children: [
@@ -180,14 +165,27 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  // SOCIAL ICON ROW
   Widget _socialRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
-        Icon(Icons.person, size: 40, color: Colors.white), // replace with GitHub logo
-        SizedBox(width: 25),
-        Icon(Icons.person, size: 40, color: Colors.white), // replace with LinkedIn logo
+      children: [
+        GestureDetector(
+          onTap: () {},
+          child: Image.asset(
+            'assets/icons/github.png',
+            width: 40,
+            height: 40,
+          ),
+        ),
+        const SizedBox(width: 25),
+        GestureDetector(
+          onTap: () {},
+          child: Image.asset(
+            'assets/icons/google.png',
+            width: 40,
+            height: 40,
+          ),
+        ),
       ],
     );
   }
