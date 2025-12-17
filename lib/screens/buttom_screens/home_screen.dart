@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goal_nepal/mycolors.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,9 +11,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox.expand(
-      child: Center(
-        child: Text('Welcome to Home Screen'),
+    return Container(
+      color: MyColors.lightYellow,
+      child: SizedBox.expand(
+        child: Center(
+          child: Text('Welcome to Home Screen'),
+        ),
       ),
     );
   }
