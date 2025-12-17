@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     title: "Kathmandu Futsal Cup 2025",
                     location: "Kathmandu, Nepal",
                     date: "Jan 1 - Jan 14, 2026",
-                    imagePath: 'assets/images/logo.png',
+                    imagePath: 'assets/images/logo.png', onRegister: () {  },
                   ),
                   childCount: 6,
                 ),
