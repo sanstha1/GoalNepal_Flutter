@@ -7,16 +7,15 @@ class Filter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton.icon(
+    return OutlinedButton(
       onPressed: onTap,
-      icon: const Icon(Icons.filter_list),
-      label: const Text("Filters"),
       style: OutlinedButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.all(19),
       ),
+      child: const Icon(Icons.filter_list),
     );
   }
 }
