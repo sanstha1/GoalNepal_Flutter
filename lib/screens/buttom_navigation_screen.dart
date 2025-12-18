@@ -9,15 +9,14 @@ class ButtomNavigationScreen extends StatefulWidget {
   const ButtomNavigationScreen({super.key});
 
   @override
-  State<ButtomNavigationScreen> createState() => _ButtomNavigationScreenState();
+  State<ButtomNavigationScreen> createState() =>
+      _ButtomNavigationScreenState();
 }
 
 class _ButtomNavigationScreenState extends State<ButtomNavigationScreen> {
-
   int _selectedIndex = 0;
 
-  //Must use valid variable name + correct type + add a Profile placeholder
-  List<Widget> bottomScreens = const [
+  final List<Widget> bottomScreens = const [
     HomeScreen(),
     NewsScreen(),
     SavedScreen(),
@@ -38,17 +37,29 @@ class _ButtomNavigationScreenState extends State<ButtomNavigationScreen> {
           ),
           backgroundColor: MyColors.blueGray,
           elevation: 0,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 16,top: 15),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.circle_notifications,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onPressed: () {},
+              ),
+            ),
+          ],
         ),
       ),
       body: bottomScreens[_selectedIndex],
-
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: MyColors.blueGray,
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.white70,
         currentIndex: _selectedIndex,
         type: BottomNavigationBarType.fixed,
-        onTap: (index){
+        onTap: (index) {
           setState(() {
             _selectedIndex = index;
           });
@@ -72,7 +83,6 @@ class _ButtomNavigationScreenState extends State<ButtomNavigationScreen> {
           ),
         ],
       ),
-
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:goal_nepal/screens/buttom_navigation_screen.dart';
 import 'package:goal_nepal/screens/register_screen.dart';
-import 'package:goal_nepal/screens/home_screen.dart';
 import 'package:goal_nepal/widgets/my_button.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -77,7 +77,7 @@ class LoginScreen extends StatelessWidget {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const HomeScreen(),
+                              builder: (_) => const ButtomNavigationScreen(),
                             ),
                           );
                         },
