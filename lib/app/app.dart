@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:goal_nepal/screens/splash_screen.dart';
+import 'package:goal_nepal/features/splash/presentation/pages/splash_screen.dart';
 // import 'package:goal_nepal/main.dart';
 
 class MyApp extends StatelessWidget {
