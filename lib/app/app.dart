@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:goal_nepal/features/splash/presentation/pages/splash_screen.dart';
-// import 'package:goal_nepal/main.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Goal Nepal',
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.system,
-      home: const SplashScreen(),
-    );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: SplashScreen());
   }
 }
