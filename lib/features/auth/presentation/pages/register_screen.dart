@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:goal_nepal/features/dashboard/presentation/widgets/my_button.dart';
+import 'package:goal_nepal/features/auth/presentation/widgets/loginbutton.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -49,7 +49,7 @@ class RegisterScreen extends StatelessWidget {
                       _inputField("Confirm Password", obscure: true),
                       const SizedBox(height: 30),
 
-                      MyButton(text: "SIGN UP", onPressed: () {}),
+                      Loginbutton(text: "SIGN UP", onPressed: () {}),
 
                       const SizedBox(height: 30),
 
@@ -100,7 +100,7 @@ class RegisterScreen extends StatelessWidget {
 
   Widget _inputField(String hint, {bool obscure = false}) {
     return Container(
-      width: 300,
+      width: 350,
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
         color: Colors.white,

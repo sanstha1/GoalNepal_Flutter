@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:goal_nepal/features/auth/presentation/widgets/loginbutton.dart';
 import 'package:goal_nepal/features/buttom_navigation/presentation/pages/buttom_navigation_screen.dart';
 import 'package:goal_nepal/features/auth/presentation/pages/register_screen.dart';
-import 'package:goal_nepal/features/dashboard/presentation/widgets/my_button.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -49,7 +49,7 @@ class LoginScreen extends StatelessWidget {
                       const Align(
                         alignment: Alignment.centerRight,
                         child: Padding(
-                          padding: EdgeInsets.only(right: 65),
+                          padding: EdgeInsets.only(right: 41),
                           child: Text(
                             "Forgot Password?",
                             style: TextStyle(
@@ -62,7 +62,7 @@ class LoginScreen extends StatelessWidget {
 
                       const SizedBox(height: 25),
 
-                      MyButton(
+                      Loginbutton(
                         text: "LOGIN",
                         onPressed: () {
                           Navigator.pushReplacement(
@@ -124,7 +124,7 @@ class LoginScreen extends StatelessWidget {
 
   Widget _inputField(String hint, {bool obscure = false}) {
     return Container(
-      width: 300,
+      width: 350,
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
         color: Colors.white,
