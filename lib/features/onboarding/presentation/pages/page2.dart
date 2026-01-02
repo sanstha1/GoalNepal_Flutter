@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:goal_nepal/app/theme/mycolors.dart';
 
 class Page2 extends StatelessWidget {
   const Page2({super.key});
@@ -7,7 +6,7 @@ class Page2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MyColors.lightYellow,
+      backgroundColor: Colors.blueGrey,
       body: SafeArea(
         child: Center(
           child: Column(
@@ -21,7 +20,7 @@ class Page2 extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 100),
               const Text(
                 "Stay Updated With Football News",
                 textAlign: TextAlign.center,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:goal_nepal/app/theme/mycolors.dart';
 import 'package:goal_nepal/features/dashboard/presentation/widgets/my_button.dart';
 
 import '../../../auth/presentation/pages/login_screen.dart';
@@ -10,7 +9,7 @@ class Page3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: MyColors.darkGray,
+      color: Colors.blueGrey,
       child: Column(
         children: [
           const Spacer(flex: 1),
