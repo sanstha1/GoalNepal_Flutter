@@ -1,18 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goal_nepal/app/app.dart';
+import 'package:goal_nepal/core/services/hive/hive_service.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Set system UI overlay style
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.white,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ),
-  );
-  runApp(const MyApp());
+  if (!kIsWeb) {
+    final hiveService = HiveService();
+    await hiveService.init();
+    await hiveService.openBoxes();
+  }
+
+  runApp(ProviderScope(child: App()));
 }
