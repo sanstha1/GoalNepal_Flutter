@@ -16,7 +16,6 @@ class AuthLocalDatasource implements IAuthDataSource {
     : _hiveService = hiveService;
   @override
   Future<AuthHiveModel?> getCurrentUser() {
-    // TODO: implement getCurrentUser
     throw UnimplementedError();
   }
 

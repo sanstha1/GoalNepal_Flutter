@@ -8,14 +8,12 @@ abstract class Failure extends Equatable {
   List<Object?> get props => [message];
 }
 
-//Local Database failure
 class LocalDatabaseFailure extends Failure {
   const LocalDatabaseFailure({
     String message = 'Local Database operation failed.',
   }) : super(message);
 }
 
-//Api database failure
 class ApiFailure extends Failure {
   final int? statusCode;
 
@@ -23,4 +21,8 @@ class ApiFailure extends Failure {
 
   @override
   List<Object?> get props => [message, statusCode];
+}
+
+class ValidationFailure extends Failure {
+  const ValidationFailure({required String message}) : super(message);
 }
