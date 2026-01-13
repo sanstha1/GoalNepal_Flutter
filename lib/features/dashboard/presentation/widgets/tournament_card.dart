@@ -20,9 +20,7 @@ class TournamentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: SizedBox(
         height: 250,
         child: Stack(
@@ -31,8 +29,9 @@ class TournamentCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ClipRRect(
-                  borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(14)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(14),
+                  ),
                   child: Image.asset(
                     imagePath,
                     height: 95,
@@ -104,8 +103,7 @@ class TournamentCard extends StatelessWidget {
                           onPressed: onRegister,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
-                            padding:
-                            const EdgeInsets.symmetric(vertical: 8),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),

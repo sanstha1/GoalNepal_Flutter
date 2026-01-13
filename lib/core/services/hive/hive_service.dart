@@ -66,7 +66,7 @@ class HiveService {
   }
 
   //Login user ko lagi
-  Future<AuthHiveModel?> loginUser(String email, String password) async {
+  Future<AuthHiveModel?> login(String email, String password) async {
     if (kIsWeb) {
       // Use in-memory storage for web
       final users = _webStorage.values.where(
@@ -86,7 +86,7 @@ class HiveService {
   }
 
   //logout ko lagi
-  Future<void> logoutUser() async {}
+  Future<void> logout() async {}
 
   //get current user
   AuthHiveModel? getCurrentUser(String authId) {
