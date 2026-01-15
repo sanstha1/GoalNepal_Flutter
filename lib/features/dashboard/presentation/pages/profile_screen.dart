@@ -338,6 +338,7 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
+// ignore: camel_case_types
 class _infoRow extends StatelessWidget {
   final String title;
   final String value;
