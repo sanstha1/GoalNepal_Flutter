@@ -20,7 +20,7 @@ class LoginScreen extends ConsumerWidget {
     /// Listen for auth changes
     ref.listen<AuthState>(authViewModelProvider, (previous, next) {
       if (next.status == AuthStatus.authenticated) {
-        showMySnackBar(context: context, message: "Login successful");
+        SnackbarUtils.showSuccess(context, "Login successful!");
 
         Future.delayed(const Duration(seconds: 1), () {
           if (context.mounted) {
@@ -33,11 +33,7 @@ class LoginScreen extends ConsumerWidget {
       }
 
       if (next.status == AuthStatus.error) {
-        showMySnackBar(
-          context: context,
-          message: next.errorMessage ?? "Login failed",
-          color: Colors.red,
-        );
+        SnackbarUtils.showError(context, next.errorMessage ?? "Login failed");
       }
     });
 
@@ -46,11 +42,7 @@ class LoginScreen extends ConsumerWidget {
       final password = _passwordController.text.trim();
 
       if (email.isEmpty || password.isEmpty) {
-        showMySnackBar(
-          context: context,
-          message: "Please fill all fields",
-          color: Colors.red,
-        );
+        SnackbarUtils.showError(context, "Please fill all fields");
         return;
       }
 

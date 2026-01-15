@@ -1,7 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
+  Future<void> _logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    // ignore: use_build_context_synchronously
+    Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          'Logout',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _logout(context);
+            },
+            child: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +68,6 @@ class ProfileScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            // Stack vertically on narrow screens to avoid horizontal overflow
             if (constraints.maxWidth < 700) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -46,11 +83,9 @@ class ProfileScreen extends StatelessWidget {
               );
             }
 
-            // Two-column layout for wider screens
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// LEFT SECTION
                 Expanded(
                   flex: 3,
                   child: Column(
@@ -63,10 +98,7 @@ class ProfileScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-
                 const SizedBox(width: 16),
-
-                /// RIGHT SETTINGS
                 Expanded(flex: 2, child: _settingsCard(context)),
               ],
             );
@@ -76,7 +108,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  /// ------------------ Personal Info ------------------
   Widget _infoCard() {
     return _card(
       title: "Personal Information",
@@ -94,7 +125,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  /// ------------------ Stats ------------------
   Widget _statsCard() {
     return _card(
       title: "Player Statistics",
@@ -111,7 +141,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  /// ------------------ Team Info ------------------
   Widget _teamCard() {
     return _card(
       title: "Team Information",
@@ -126,18 +155,15 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 4),
           const Text("Mountain Kings", style: TextStyle(fontSize: 16)),
           const SizedBox(height: 12),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const [Text("Role: Player"), Text("Joined: Jan 2024")],
           ),
-
           const SizedBox(height: 16),
           const Text(
             "Recent Matches",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-
           const SizedBox(height: 10),
           _matchTile(
             "vs Valley United",
@@ -157,7 +183,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  /// ------------------ Settings ------------------
   Widget _settingsCard(BuildContext context) {
     return _card(
       title: "Settings",
@@ -183,7 +208,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           OutlinedButton(
-            onPressed: () {},
+            onPressed: () => _showLogoutDialog(context),
             style: OutlinedButton.styleFrom(
               minimumSize: const Size(double.infinity, 48),
               side: const BorderSide(color: Color(0xFF6B7C93)),
@@ -201,7 +226,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  /// ------------------ Reusable Widgets ------------------
   Widget _card({
     required String title,
     required IconData icon,
@@ -314,7 +338,6 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-// ignore: camel_case_types
 class _infoRow extends StatelessWidget {
   final String title;
   final String value;

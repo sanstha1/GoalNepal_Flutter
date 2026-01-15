@@ -23,7 +23,6 @@ class AuthViewModel extends Notifier<AuthState> {
     required String fullname,
     required String email,
     required String password,
-    required String fullName,
   }) async {
     state = state.copyWith(status: AuthStatus.loading);
     //wait for 2 seconds

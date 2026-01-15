@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goal_nepal/core/utils/my_snackbar.dart';
 import 'package:goal_nepal/features/auth/presentation/widgets/loginbutton.dart';
 import 'package:goal_nepal/features/auth/presentation/pages/login_screen.dart';
 import 'package:goal_nepal/features/auth/presentation/view_model/auth_view_model.dart';
 import 'package:goal_nepal/features/auth/presentation/state/auth_state.dart';
-import 'package:goal_nepal/core/utils/my_snackbar.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -39,49 +39,34 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         email.isEmpty ||
         password.isEmpty ||
         confirmPassword.isEmpty) {
-      showMySnackBar(
-        context: context,
-        message: "Please fill all fields",
-        color: Colors.red,
-      );
+      SnackbarUtils.showError(context, "Please fill all fields");
       return;
     }
 
     if (password != confirmPassword) {
-      showMySnackBar(
-        context: context,
-        message: "Passwords do not match",
-        color: Colors.red,
-      );
+      SnackbarUtils.showError(context, "Passwords do not match");
       return;
     }
 
     ref
         .read(authViewModelProvider.notifier)
-        .register(
-          fullName: fullName,
-          email: email,
-          password: password,
-          fullname: 'fullName',
-        );
+        .register(fullname: fullName, email: email, password: password);
   }
 
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authViewModelProvider);
 
-    /// Listen for auth changes
     ref.listen<AuthState>(authViewModelProvider, (previous, next) {
       if (next.status == AuthStatus.registered) {
-        showMySnackBar(
-          context: context,
-          message: "Registration successful! Please login.",
+        SnackbarUtils.showSuccess(
+          context,
+          "Registration successful! Please login.",
         );
 
         Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) {
+          if (context.mounted) {
             Navigator.pushReplacement(
-              // ignore: use_build_context_synchronously
               context,
               MaterialPageRoute(builder: (_) => LoginScreen()),
             );
@@ -90,10 +75,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       }
 
       if (next.status == AuthStatus.error) {
-        showMySnackBar(
-          context: context,
-          message: next.errorMessage ?? "Registration failed",
-          color: Colors.red,
+        SnackbarUtils.showError(
+          context,
+          next.errorMessage ?? "Registration failed",
         );
       }
     });

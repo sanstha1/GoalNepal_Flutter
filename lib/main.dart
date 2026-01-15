@@ -9,20 +9,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize SharedPreferences (works on all platforms)
+  final sharedPrefs = await SharedPreferences.getInstance();
+
+  // Initialize Hive only on non-web platforms (Hive doesn't support web without extra setup)
   if (!kIsWeb) {
     final hiveService = HiveService();
     await hiveService.init();
     await hiveService.openBoxes();
   }
-
-  await HiveService().init();
-
-  //shared preference ko object
-  //shared pref = asynchronous
-  //provider = synchronous
-
-  //shared prefs
-  final sharedPrefs = await SharedPreferences.getInstance();
 
   runApp(
     ProviderScope(
