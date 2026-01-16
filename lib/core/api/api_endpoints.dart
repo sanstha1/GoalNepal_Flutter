@@ -20,5 +20,7 @@ class ApiEndpoints {
   static const String login = '/auth/login';
 
   // ================= User =================
-  static const String profile = '/users/profile';
+  static const String profile = '/user/profile';
+
+  static String? get user => null;
 }

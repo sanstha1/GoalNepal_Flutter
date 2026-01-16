@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goal_nepal/app/app.dart';
@@ -9,19 +8,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize SharedPreferences (works on all platforms)
-  final sharedPrefs = await SharedPreferences.getInstance();
+  final hiveService = HiveService();
 
-  // Initialize Hive only on non-web platforms (Hive doesn't support web without extra setup)
-  if (!kIsWeb) {
-    final hiveService = HiveService();
-    await hiveService.init();
-    await hiveService.openBoxes();
-  }
+  await hiveService.init();
+
+  final sharedPrefs = await SharedPreferences.getInstance();
 
   runApp(
     ProviderScope(
-      overrides: [sharedPreferencesProvider.overrideWithValue(sharedPrefs)],
+      overrides: [
+        hiveServiceProvider.overrideWithValue(hiveService),
+        sharedPreferencesProvider.overrideWithValue(sharedPrefs),
+      ],
       child: const App(),
     ),
   );

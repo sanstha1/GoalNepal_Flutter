@@ -41,6 +41,8 @@ class AuthHiveModel extends HiveObject {
     );
   }
 
+  get id => null;
+
   //To entity
   AuthEntity toEntity() {
     return AuthEntity(

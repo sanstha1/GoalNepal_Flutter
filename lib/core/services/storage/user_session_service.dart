@@ -36,6 +36,7 @@ class UserSessionService {
     }
   }
 
+  //clears user session data
   Future<void> clearUserSession() async {
     await _prefs.remove(_keyIsLoggedIn);
     await _prefs.remove(_keyAuthId);

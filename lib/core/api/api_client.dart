@@ -3,16 +3,13 @@ import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:goal_nepal/core/api/api_endpoints.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-import 'api_endpoints.dart';
-
-// ================= Provider =================
 final apiClientProvider = Provider<ApiClient>((ref) {
   return ApiClient();
 });
 
-// ================= ApiClient =================
 class ApiClient {
   late final Dio _dio;
 
@@ -23,16 +20,15 @@ class ApiClient {
         connectTimeout: ApiEndpoints.connectionTimeout,
         receiveTimeout: ApiEndpoints.receiveTimeout,
         headers: {
-          'Content-Type': 'application/json',
+          'content-Type': 'application/json',
           'Accept': 'application/json',
         },
       ),
     );
 
-    // Add Auth Interceptor
+    //Add interceptors
     _dio.interceptors.add(_AuthInterceptor());
 
-    // Retry on network failures
     _dio.interceptors.add(
       RetryInterceptor(
         dio: _dio,
@@ -43,15 +39,13 @@ class ApiClient {
           Duration(seconds: 3),
         ],
         retryEvaluator: (error, attempt) {
-          return error.type == DioExceptionType.connectionTimeout ||
+          return error.type == DioExceptionType.sendTimeout ||
               error.type == DioExceptionType.sendTimeout ||
               error.type == DioExceptionType.receiveTimeout ||
               error.type == DioExceptionType.connectionError;
         },
       ),
     );
-
-    // Logger only in debug mode
     if (kDebugMode) {
       _dio.interceptors.add(
         PrettyDioLogger(
@@ -65,10 +59,7 @@ class ApiClient {
       );
     }
   }
-
   Dio get dio => _dio;
-
-  // ================= HTTP METHODS =================
 
   Future<Response> get(
     String path, {
@@ -84,7 +75,7 @@ class ApiClient {
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) async {
-    return _dio.post(
+    return _dio.get(
       path,
       data: data,
       queryParameters: queryParameters,
@@ -135,7 +126,6 @@ class ApiClient {
   }
 }
 
-// ================= Auth Interceptor =================
 class _AuthInterceptor extends Interceptor {
   final _storage = const FlutterSecureStorage();
   static const String _tokenKey = 'auth_token';
@@ -145,13 +135,18 @@ class _AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    final publicEndpoints = [ApiEndpoints.login, ApiEndpoints.register];
+    // Skip auth for public endpoints
+    final publicEndpoints = [ApiEndpoints.login];
 
-    final isPublicEndpoint = publicEndpoints.any(
-      (endpoint) => options.path.startsWith(endpoint),
-    );
+    final isPublicGet =
+        options.method == 'GET' &&
+        publicEndpoints.any((endpoint) => options.path.startsWith(endpoint));
 
-    if (!isPublicEndpoint) {
+    final isAuthEndpoint =
+        options.path == ApiEndpoints.login ||
+        options.path == ApiEndpoints.register;
+
+    if (!isPublicGet && !isAuthEndpoint) {
       final token = await _storage.read(key: _tokenKey);
       if (token != null) {
         options.headers['Authorization'] = 'Bearer $token';
@@ -162,13 +157,13 @@ class _AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    // Handle 401 Unauthorized - token expired
     if (err.response?.statusCode == 401) {
-      // Token expired or invalid
-      await _storage.delete(key: _tokenKey);
-      // Navigation to login can be handled via state management
+      // Clear token and redirect to login
+      _storage.delete(key: _tokenKey);
+      // You can add navigation logic here or use a callback
     }
-
     handler.next(err);
   }
 }

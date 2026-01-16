@@ -5,7 +5,7 @@ import 'package:goal_nepal/features/auth/data/datasources/auth_datasource.dart';
 import 'package:goal_nepal/features/auth/data/models/auth_hive_model.dart';
 
 //Provider
-final authLocalDatasourceProvider = Provider<AuthLocalDatasource>((ref) {
+final authLocalDatasourceProvider = Provider<IAuthLocalDataSource>((ref) {
   final hiveService = ref.read(hiveServiceProvider);
   // ignore: non_constant_identifier_names
   final UserSessionService = ref.read(userSessionServiceProvider);
@@ -15,7 +15,7 @@ final authLocalDatasourceProvider = Provider<AuthLocalDatasource>((ref) {
   );
 });
 
-class AuthLocalDatasource implements IAuthDataSource {
+class AuthLocalDatasource implements IAuthLocalDataSource {
   final HiveService _hiveService;
   final UserSessionService _userSessionService;
 
