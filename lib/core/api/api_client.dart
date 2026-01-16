@@ -20,13 +20,12 @@ class ApiClient {
         connectTimeout: ApiEndpoints.connectionTimeout,
         receiveTimeout: ApiEndpoints.receiveTimeout,
         headers: {
-          'content-Type': 'application/json',
+          'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
       ),
     );
 
-    //Add interceptors
     _dio.interceptors.add(_AuthInterceptor());
 
     _dio.interceptors.add(
@@ -40,12 +39,12 @@ class ApiClient {
         ],
         retryEvaluator: (error, attempt) {
           return error.type == DioExceptionType.sendTimeout ||
-              error.type == DioExceptionType.sendTimeout ||
               error.type == DioExceptionType.receiveTimeout ||
               error.type == DioExceptionType.connectionError;
         },
       ),
     );
+
     if (kDebugMode) {
       _dio.interceptors.add(
         PrettyDioLogger(
@@ -59,6 +58,7 @@ class ApiClient {
       );
     }
   }
+
   Dio get dio => _dio;
 
   Future<Response> get(
@@ -75,7 +75,7 @@ class ApiClient {
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) async {
-    return _dio.get(
+    return _dio.post(
       path,
       data: data,
       queryParameters: queryParameters,
@@ -135,18 +135,11 @@ class _AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // Skip auth for public endpoints
-    final publicEndpoints = [ApiEndpoints.login];
-
-    final isPublicGet =
-        options.method == 'GET' &&
-        publicEndpoints.any((endpoint) => options.path.startsWith(endpoint));
-
     final isAuthEndpoint =
         options.path == ApiEndpoints.login ||
         options.path == ApiEndpoints.register;
 
-    if (!isPublicGet && !isAuthEndpoint) {
+    if (!isAuthEndpoint) {
       final token = await _storage.read(key: _tokenKey);
       if (token != null) {
         options.headers['Authorization'] = 'Bearer $token';
@@ -158,11 +151,8 @@ class _AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    // Handle 401 Unauthorized - token expired
     if (err.response?.statusCode == 401) {
-      // Clear token and redirect to login
       _storage.delete(key: _tokenKey);
-      // You can add navigation logic here or use a callback
     }
     handler.next(err);
   }

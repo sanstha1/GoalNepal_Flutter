@@ -83,19 +83,15 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
   @override
   Future<AuthApiModel> register(AuthApiModel user) async {
     try {
-      final response = await _apiClient.post(
+      await _apiClient.post(
         ApiEndpoints.register,
-        data: user.toJson(),
+        data: {
+          'fullName': user.fullName,
+          'email': user.email,
+          'password': user.password,
+        },
       );
-
-      final data = response.data;
-
-      if (data is Map<String, dynamic> &&
-          data['user'] is Map<String, dynamic>) {
-        return AuthApiModel.fromJson(data['user']);
-      }
-
-      throw Exception('Invalid registration response');
+      return user;
     } on DioException catch (e) {
       final data = e.response?.data;
       final message = data is Map<String, dynamic>
