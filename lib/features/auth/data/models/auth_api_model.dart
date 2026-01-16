@@ -26,8 +26,8 @@ class AuthApiModel {
 
   factory AuthApiModel.fromJson(Map<String, dynamic> json) {
     return AuthApiModel(
-      id: json['_id'] as String,
-      fullName: json['name'] as String,
+      id: json['id'] as String?,
+      fullName: json['fullName'] as String,
       email: json['email'] as String,
       profilePicture: json['profilePicture'] as String?,
     );

@@ -23,14 +23,13 @@ class AuthHiveModel extends HiveObject {
   final String? profilePicture;
 
   AuthHiveModel({
-    String? authId, // this is auto increment so using Uuid
+    String? authId,
     required this.fullName,
     required this.email,
     this.password,
     this.profilePicture,
-  }) : authId = authId ?? Uuid().v4();
+  }) : authId = authId ?? const Uuid().v4();
 
-  //From Entity
   factory AuthHiveModel.fromEntity(AuthEntity entity) {
     return AuthHiveModel(
       authId: entity.authId,
@@ -41,9 +40,6 @@ class AuthHiveModel extends HiveObject {
     );
   }
 
-  get id => null;
-
-  //To entity
   AuthEntity toEntity() {
     return AuthEntity(
       authId: authId,
@@ -54,7 +50,6 @@ class AuthHiveModel extends HiveObject {
     );
   }
 
-  //To Entity list
   static List<AuthEntity> toEntityList(List<AuthHiveModel> models) {
     return models.map((model) => model.toEntity()).toList();
   }

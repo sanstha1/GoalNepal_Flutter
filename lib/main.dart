@@ -9,7 +9,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final hiveService = HiveService();
-
   await hiveService.init();
 
   final sharedPrefs = await SharedPreferences.getInstance();

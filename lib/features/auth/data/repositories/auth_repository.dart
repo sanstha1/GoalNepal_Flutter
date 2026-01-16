@@ -58,11 +58,13 @@ class AuthRepository implements IAuthRepository {
         }
         return const Left(ApiFailure(message: 'Invalid credentials'));
       } on DioException catch (e) {
+        final data = e.response?.data;
+        final message = data is Map<String, dynamic>
+            ? data['message'] ?? 'Login failed'
+            : data?.toString() ?? 'Login failed';
+
         return Left(
-          ApiFailure(
-            message: e.response?.data['message'] ?? 'Login failed',
-            statusCode: e.response?.statusCode,
-          ),
+          ApiFailure(message: message, statusCode: e.response?.statusCode),
         );
       } catch (e) {
         return Left(ApiFailure(message: e.toString()));
@@ -83,19 +85,6 @@ class AuthRepository implements IAuthRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> logout() async {
-    try {
-      final result = await _authDatasource.logout();
-      if (result) {
-        return const Right(true);
-      }
-      return Left(LocalDatabaseFailure(message: 'Failed to logout user'));
-    } catch (e) {
-      return Left(LocalDatabaseFailure(message: e.toString()));
-    }
-  }
-
-  @override
   Future<Either<Failure, bool>> register(AuthEntity entity) async {
     if (await _networkInfo.isConnected) {
       try {
@@ -103,11 +92,13 @@ class AuthRepository implements IAuthRepository {
         await _authRemoteDataSource.register(apiModel);
         return const Right(true);
       } on DioException catch (e) {
+        final data = e.response?.data;
+        final message = data is Map<String, dynamic>
+            ? data['message'] ?? 'Registration failed'
+            : data?.toString() ?? 'Registration failed';
+
         return Left(
-          ApiFailure(
-            message: e.response?.data['message'] ?? 'Registration failed',
-            statusCode: e.response?.statusCode,
-          ),
+          ApiFailure(message: message, statusCode: e.response?.statusCode),
         );
       } catch (e) {
         return Left(ApiFailure(message: e.toString()));
@@ -120,6 +111,19 @@ class AuthRepository implements IAuthRepository {
       } catch (e) {
         return Left(LocalDatabaseFailure(message: e.toString()));
       }
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> logout() async {
+    try {
+      final result = await _authDatasource.logout();
+      if (result) {
+        return const Right(true);
+      }
+      return Left(LocalDatabaseFailure(message: 'Failed to logout user'));
+    } catch (e) {
+      return Left(LocalDatabaseFailure(message: e.toString()));
     }
   }
 }
