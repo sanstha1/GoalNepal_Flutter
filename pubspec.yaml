@@ -51,6 +51,8 @@ dependencies:
   pretty_dio_logger: ^1.4.0
   connectivity_plus: ^7.0.0
   flutter_secure_storage: ^10.0.0
+  permission_handler: ^12.0.1
+  image_picker: ^1.2.1
 
 
 dev_dependencies:

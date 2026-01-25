@@ -7,21 +7,26 @@ import 'package:goal_nepal/features/auth/presentation/view_model/auth_view_model
 import 'package:goal_nepal/features/auth/presentation/state/auth_state.dart';
 import 'package:goal_nepal/core/utils/my_snackbar.dart';
 
-class LoginScreen extends ConsumerWidget {
-  LoginScreen({super.key});
+class LoginScreen extends ConsumerStatefulWidget {
+  const LoginScreen({super.key});
 
+  @override
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  bool _obscurePassword = true;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final authState = ref.watch(authViewModelProvider);
 
-    /// Listen for auth changes
     ref.listen<AuthState>(authViewModelProvider, (previous, next) {
       if (next.status == AuthStatus.authenticated) {
         SnackbarUtils.showSuccess(context, "Login successful!");
-
         Future.delayed(const Duration(seconds: 1), () {
           if (context.mounted) {
             Navigator.pushReplacement(
@@ -66,7 +71,6 @@ class LoginScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   Image.asset("assets/images/logo.png", height: 350),
-
                   const Text(
                     "LOGIN",
                     style: TextStyle(
@@ -75,24 +79,20 @@ class LoginScreen extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   const SizedBox(height: 30),
-
                   _inputField(
                     controller: _emailController,
                     hint: "Enter your email",
+                    prefixIcon: Icons.email_outlined,
                   ),
-
                   const SizedBox(height: 20),
-
                   _inputField(
                     controller: _passwordController,
                     hint: "Enter your password",
-                    obscure: true,
+                    prefixIcon: Icons.lock_outline,
+                    isPassword: true,
                   ),
-
                   const SizedBox(height: 10),
-
                   const Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
@@ -106,9 +106,7 @@ class LoginScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 25),
-
                   Loginbutton(
                     text: authState.status == AuthStatus.loading
                         ? "LOGGING IN..."
@@ -117,17 +115,11 @@ class LoginScreen extends ConsumerWidget {
                         ? () {}
                         : handleLogin,
                   ),
-
                   const SizedBox(height: 30),
-
                   _divider(),
-
                   const SizedBox(height: 20),
-
                   _socialRow(),
-
                   const SizedBox(height: 30),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -154,7 +146,6 @@ class LoginScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 20),
                 ],
               ),
@@ -168,19 +159,38 @@ class LoginScreen extends ConsumerWidget {
   Widget _inputField({
     required TextEditingController controller,
     required String hint,
-    bool obscure = false,
+    required IconData prefixIcon,
+    bool isPassword = false,
   }) {
     return Container(
       width: 350,
-      padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextField(
         controller: controller,
-        obscureText: obscure,
-        decoration: InputDecoration(border: InputBorder.none, hintText: hint),
+        obscureText: isPassword ? _obscurePassword : false,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: hint,
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(vertical: 16),
+          prefixIcon: Icon(prefixIcon, color: Colors.grey),
+          suffixIcon: isPassword
+              ? IconButton(
+                  icon: Icon(
+                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscurePassword = !_obscurePassword;
+                    });
+                  },
+                )
+              : null,
+        ),
       ),
     );
   }

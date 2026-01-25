@@ -7,7 +7,6 @@ class ProfileScreen extends StatelessWidget {
   Future<void> _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
-    // ignore: use_build_context_synchronously
     Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
   }
 
@@ -113,13 +112,40 @@ class ProfileScreen extends StatelessWidget {
       title: "Personal Information",
       icon: Icons.person,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          _infoRow("Full Name", "Santosh Shrestha", Icons.badge),
-          SizedBox(height: 10),
-          _infoRow("Email", "sthasantosh070@gmail.com", Icons.email),
-          SizedBox(height: 10),
-          _infoRow("Phone", "+977-9848843744", Icons.phone),
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Stack(
+            children: [
+              const CircleAvatar(
+                radius: 50,
+                backgroundColor: Color(0xFF6B7C93),
+                child: Text(
+                  "SS",
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF6B7C93),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.edit, size: 16, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          const _infoRow("Full Name", "Santosh Shrestha", Icons.badge),
+          const SizedBox(height: 10),
+          const _infoRow("Email", "sthasantosh070@gmail.com", Icons.email),
         ],
       ),
     );
@@ -338,7 +364,6 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-// ignore: camel_case_types
 class _infoRow extends StatelessWidget {
   final String title;
   final String value;

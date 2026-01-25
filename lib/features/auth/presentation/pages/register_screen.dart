@@ -20,6 +20,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+
   @override
   void dispose() {
     _fullNameController.dispose();
@@ -68,7 +71,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           if (context.mounted) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => LoginScreen()),
+              MaterialPageRoute(builder: (_) => const LoginScreen()),
             );
           }
         });
@@ -97,9 +100,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               child: Column(
                 children: [
                   Image.asset("assets/images/logo.png", height: 280),
-
                   const SizedBox(height: 10),
-
                   const Text(
                     "Register",
                     style: TextStyle(
@@ -108,36 +109,45 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   const SizedBox(height: 30),
-
                   _inputField(
                     controller: _fullNameController,
                     hint: "Full Name",
+                    prefixIcon: Icons.person_outline,
                   ),
-
                   const SizedBox(height: 18),
-
-                  _inputField(controller: _emailController, hint: "Email"),
-
+                  _inputField(
+                    controller: _emailController,
+                    hint: "Email",
+                    prefixIcon: Icons.email_outlined,
+                  ),
                   const SizedBox(height: 18),
-
                   _inputField(
                     controller: _passwordController,
                     hint: "Password",
-                    obscure: true,
+                    prefixIcon: Icons.lock_outline,
+                    isPassword: true,
+                    obscure: _obscurePassword,
+                    onToggle: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
                   ),
-
                   const SizedBox(height: 18),
-
                   _inputField(
                     controller: _confirmPasswordController,
                     hint: "Confirm Password",
-                    obscure: true,
+                    prefixIcon: Icons.lock_outline,
+                    isPassword: true,
+                    obscure: _obscureConfirmPassword,
+                    onToggle: () {
+                      setState(() {
+                        _obscureConfirmPassword = !_obscureConfirmPassword;
+                      });
+                    },
                   ),
-
                   const SizedBox(height: 30),
-
                   Loginbutton(
                     text: authState.status == AuthStatus.loading
                         ? "SIGNING UP..."
@@ -146,15 +156,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ? () {}
                         : _handleRegister,
                   ),
-
                   const SizedBox(height: 30),
-
                   _divider(),
                   const SizedBox(height: 20),
-
                   _socialRow(),
                   const SizedBox(height: 30),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -166,7 +172,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         onTap: () {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (_) => LoginScreen()),
+                            MaterialPageRoute(
+                              builder: (_) => const LoginScreen(),
+                            ),
                           );
                         },
                         child: const Text(
@@ -179,7 +187,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 20),
                 ],
               ),
@@ -193,19 +200,36 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Widget _inputField({
     required TextEditingController controller,
     required String hint,
+    required IconData prefixIcon,
+    bool isPassword = false,
     bool obscure = false,
+    VoidCallback? onToggle,
   }) {
     return Container(
       width: 350,
-      padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextField(
         controller: controller,
-        obscureText: obscure,
-        decoration: InputDecoration(border: InputBorder.none, hintText: hint),
+        obscureText: isPassword ? obscure : false,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: hint,
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(vertical: 16),
+          prefixIcon: Icon(prefixIcon, color: Colors.grey),
+          suffixIcon: isPassword
+              ? IconButton(
+                  icon: Icon(
+                    obscure ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.grey,
+                  ),
+                  onPressed: onToggle,
+                )
+              : null,
+        ),
       ),
     );
   }
