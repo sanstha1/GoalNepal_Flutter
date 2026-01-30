@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 abstract class Failure extends Equatable {
   final String message;
+
   const Failure(this.message);
 
   @override
@@ -21,6 +22,11 @@ class ApiFailure extends Failure {
 
   @override
   List<Object?> get props => [message, statusCode];
+}
+
+class NetworkFailure extends Failure {
+  const NetworkFailure({String message = 'No internet connection'})
+    : super(message);
 }
 
 class ValidationFailure extends Failure {
