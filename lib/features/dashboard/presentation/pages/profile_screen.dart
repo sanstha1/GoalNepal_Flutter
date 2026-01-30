@@ -1,34 +1,44 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goal_nepal/core/api/api_endpoints.dart';
 import 'package:goal_nepal/core/utils/my_snackbar.dart';
+import 'package:goal_nepal/features/auth/presentation/state/auth_state.dart';
+import 'package:goal_nepal/features/auth/presentation/view_model/auth_view_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
-  // Image picker instance
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final ImagePicker _imagePicker = ImagePicker();
-
-  // Selected profile image
   XFile? _selectedImage;
+  bool _isUploading = false;
 
-  /// LOGOUT FUNCTION
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(authViewModelProvider.notifier).getCurrentUser();
+    });
+  }
+
   Future<void> _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
-    // ignore: use_build_context_synchronously
-    Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+    if (mounted) {
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+    }
   }
 
-  /// LOGOUT CONFIRMATION DIALOG
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -59,7 +69,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  /// REQUEST PERMISSION - Reusable permission handler
   Future<bool> _requestPermission(Permission permission) async {
     final status = await permission.status;
 
@@ -80,7 +89,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return false;
   }
 
-  /// PERMISSION DENIED DIALOG - Shows when permission is permanently denied
   void _showPermissionDeniedDialog() {
     showDialog(
       context: context,
@@ -106,7 +114,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  /// PICK IMAGE FROM CAMERA - Captures photo using device camera
+  Future<void> _uploadProfilePicture(File imageFile) async {
+    setState(() {
+      _isUploading = true;
+    });
+
+    try {
+      await ref
+          .read(authViewModelProvider.notifier)
+          .uploadProfilePicture(imageFile);
+
+      if (mounted) {
+        SnackbarUtils.showSuccess(
+          context,
+          'Profile picture updated successfully',
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        SnackbarUtils.showError(context, 'Failed to upload profile picture');
+      }
+    } finally {
+      setState(() {
+        _isUploading = false;
+      });
+    }
+  }
+
   Future<void> _pickFromCamera() async {
     final hasPermission = await _requestPermission(Permission.camera);
     if (!hasPermission) return;
@@ -121,12 +155,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _selectedImage = photo;
       });
 
-      // TODO: Upload photo to server
-      // await ref.read(profileViewModelProvider.notifier).uploadPhoto(File(photo.path));
+      await _uploadProfilePicture(File(photo.path));
     }
   }
 
-  /// PICK IMAGE FROM GALLERY - Selects existing photo from device
   Future<void> _pickFromGallery() async {
     try {
       final XFile? image = await _imagePicker.pickImage(
@@ -139,8 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _selectedImage = image;
         });
 
-        // TODO: Upload photo to server
-        // await ref.read(profileViewModelProvider.notifier).uploadPhoto(File(image.path));
+        await _uploadProfilePicture(File(image.path));
       }
     } catch (e) {
       debugPrint('Gallery Error: $e');
@@ -154,7 +185,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  /// SHOW IMAGE PICKER BOTTOM SHEET - Modal to choose camera or gallery
   Future<void> _pickImage() async {
     showModalBottomSheet(
       context: context,
@@ -193,6 +223,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authViewModelProvider);
+    final isLoading = authState.status == AuthStatus.loading;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBEA),
       appBar: AppBar(
@@ -214,52 +247,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(width: 12),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            if (constraints.maxWidth < 700) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _infoCard(),
-                  const SizedBox(height: 16),
-                  _statsCard(),
-                  const SizedBox(height: 16),
-                  _teamCard(),
-                  const SizedBox(height: 16),
-                  _settingsCard(context),
-                ],
-              );
-            }
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  if (constraints.maxWidth < 700) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _infoCard(authState),
+                        const SizedBox(height: 16),
+                        _statsCard(),
+                        const SizedBox(height: 16),
+                        _teamCard(),
+                        const SizedBox(height: 16),
+                        _settingsCard(context),
+                      ],
+                    );
+                  }
 
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Column(
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _infoCard(),
-                      const SizedBox(height: 16),
-                      _statsCard(),
-                      const SizedBox(height: 16),
-                      _teamCard(),
+                      Expanded(
+                        flex: 3,
+                        child: Column(
+                          children: [
+                            _infoCard(authState),
+                            const SizedBox(height: 16),
+                            _statsCard(),
+                            const SizedBox(height: 16),
+                            _teamCard(),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(flex: 2, child: _settingsCard(context)),
                     ],
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(flex: 2, child: _settingsCard(context)),
-              ],
-            );
-          },
-        ),
-      ),
+                  );
+                },
+              ),
+            ),
     );
   }
 
-  /// PERSONAL INFO CARD - Contains profile picture and user details
-  Widget _infoCard() {
+  Widget _infoCard(AuthState authState) {
+    final user = authState.authEntity;
+    final profilePictureUrl =
+        user?.profilePicture != null && user!.profilePicture!.isNotEmpty
+        ? ApiEndpoints.profilePicture(user.profilePicture!)
+        : null;
+
     return _card(
       title: "Personal Information",
       icon: Icons.person,
@@ -267,7 +307,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           GestureDetector(
-            onTap: _pickImage,
+            onTap: _isUploading ? null : _pickImage,
             child: Stack(
               children: [
                 CircleAvatar(
@@ -275,11 +315,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   backgroundColor: const Color(0xFF6B7C93),
                   backgroundImage: _selectedImage != null
                       ? FileImage(File(_selectedImage!.path))
+                      : profilePictureUrl != null
+                      ? NetworkImage(profilePictureUrl)
                       : null,
-                  child: _selectedImage == null
-                      ? const Text(
-                          "SS",
-                          style: TextStyle(
+                  child: _isUploading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : _selectedImage == null && profilePictureUrl == null
+                      ? Text(
+                          user?.fullName.substring(0, 2).toUpperCase() ?? "SS",
+                          style: const TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -287,30 +331,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         )
                       : null,
                 ),
-                // Edit icon overlay
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF6B7C93),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.edit,
-                      size: 16,
-                      color: Colors.white,
+                if (!_isUploading)
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF6B7C93),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.edit,
+                        size: 16,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
           const SizedBox(height: 20),
-          const _InfoRow("Full Name", "Santosh Shrestha", Icons.badge),
+          _InfoRow("Full Name", user?.fullName ?? "N/A", Icons.badge),
           const SizedBox(height: 10),
-          const _InfoRow("Email", "sthasantosh070@gmail.com", Icons.email),
+          _InfoRow("Email", user?.email ?? "N/A", Icons.email),
         ],
       ),
     );

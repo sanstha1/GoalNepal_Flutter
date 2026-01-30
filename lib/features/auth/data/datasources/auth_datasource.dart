@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:goal_nepal/features/auth/data/models/auth_api_model.dart';
 import 'package:goal_nepal/features/auth/data/models/auth_hive_model.dart';
 
@@ -6,13 +8,17 @@ abstract interface class IAuthLocalDataSource {
   Future<AuthHiveModel?> login(String email, String password);
   Future<AuthHiveModel?> getCurrentUser();
   Future<bool> logout();
-
-  //email exists
   Future<bool> isEmailExists(String email);
+  Future<bool> updateUser(AuthHiveModel model);
 }
 
 abstract interface class IAuthRemoteDataSource {
   Future<AuthApiModel> register(AuthApiModel user);
   Future<AuthApiModel?> login(String email, String password);
   Future<AuthApiModel?> getUserById(AuthHiveModel authId);
+  Future<String> uploadProfilePicture(File photo, String userId);
+  Future<AuthApiModel> updateProfilePicture(
+    String userId,
+    String profilePictureUrl,
+  );
 }

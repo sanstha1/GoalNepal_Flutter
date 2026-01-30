@@ -21,8 +21,6 @@ class AuthState extends Equatable {
     this.errorMessage,
   });
 
-  //copywith
-
   AuthState copyWith({
     AuthStatus? status,
     AuthEntity? authEntity,

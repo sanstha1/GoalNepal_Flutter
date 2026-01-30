@@ -28,10 +28,13 @@ class ApiEndpoints {
   static const String user = '/users';
   static String userById(String id) => '/users/$id';
 
-  //-------------------- User ----------------------------------------
+  //-------------------- Auth ----------------------------------------
   static const String register = '/auth/register';
   static const String login = '/auth/login';
   static const String profile = '/auth/profile';
+
+  //-------------------- Profile Picture ----------------------------------------
+  static const String uploadProfilePicture = '/users/upload-profile-picture';
   static String profilePicture(String filename) =>
       '$mediaServerUrl/profile_pictures/$filename';
 }

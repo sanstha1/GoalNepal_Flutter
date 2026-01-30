@@ -15,6 +15,22 @@ class AuthEntity extends Equatable {
     this.profilePicture,
   });
 
+  AuthEntity copyWith({
+    String? authId,
+    String? fullName,
+    String? email,
+    String? password,
+    String? profilePicture,
+  }) {
+    return AuthEntity(
+      authId: authId ?? this.authId,
+      fullName: fullName ?? this.fullName,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      profilePicture: profilePicture ?? this.profilePicture,
+    );
+  }
+
   @override
   List<Object?> get props => [
     authId,
