@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:goal_nepal/features/dashboard/presentation/widgets/my_button.dart';
-
+import 'package:goal_nepal/app/theme/mycolors.dart';
 import '../../../auth/presentation/pages/login_screen.dart';
 
 class Page3 extends StatelessWidget {
@@ -9,60 +8,95 @@ class Page3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.blueGrey,
-      child: Column(
-        children: [
-          const Spacer(flex: 1),
-
-          ClipOval(
-            child: Image.asset(
-              'assets/images/tournament.jpg',
-              width: 260,
-              height: 260,
-              fit: BoxFit.cover,
-            ),
+      color: MyColors.blueGray,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: Column(
+            children: [
+              const Spacer(flex: 2),
+              Container(
+                width: 280,
+                height: 280,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      // ignore: deprecated_member_use
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 20,
+                      offset: Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.asset(
+                      'assets/images/onboarding2.png',
+                      width: 280,
+                      height: 280,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 60),
+              const Text(
+                'MANAGE TOURNAMENTS\nEASILY',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  letterSpacing: 1.2,
+                  height: 1.3,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Create tournaments, manage teams, and track live scores all in one place',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  height: 1.5,
+                ),
+              ),
+              const Spacer(flex: 2),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => LoginScreen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 5,
+                  ),
+                  child: const Text(
+                    'NEXT',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+              const Spacer(flex: 1),
+            ],
           ),
-
-          const SizedBox(height: 40),
-
-          const Text(
-            "Manage Tournaments Easily",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              "Create tournaments, manage teams, and track live scores all in one place.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.white70),
-            ),
-          ),
-
-          const Spacer(),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: MyButton(
-              text: 'Get Started',
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => LoginScreen()),
-                );
-              },
-            ),
-          ),
-
-          const Spacer(flex: 1),
-        ],
+        ),
       ),
     );
   }

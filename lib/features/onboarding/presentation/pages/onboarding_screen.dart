@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goal_nepal/app/theme/mycolors.dart';
 import 'package:goal_nepal/features/onboarding/presentation/pages/page1.dart';
 import 'package:goal_nepal/features/onboarding/presentation/pages/page2.dart';
 import 'package:goal_nepal/features/onboarding/presentation/pages/page3.dart';
@@ -24,6 +25,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: MyColors.blueGray,
       body: Stack(
         children: [
           PageView(
@@ -43,42 +45,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ],
           ),
-
           Align(
-            alignment: Alignment(0, 0.85),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            alignment: Alignment(0, 0.92),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                if (currentPage != 0)
-                  GestureDetector(
-                    onTap: () {
-                      _controller.previousPage(
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeIn,
-                      );
+                SmoothPageIndicator(
+                  controller: _controller,
+                  count: 3,
+                  effect: WormEffect(
+                    dotHeight: 8,
+                    dotWidth: 8,
+                    activeDotColor: Colors.blue,
+                    dotColor: Colors.white.withOpacity(0.5),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                if (currentPage < 2)
+                  TextButton(
+                    onPressed: () {
+                      _controller.jumpToPage(2);
                     },
-                    child: const Text(
-                      'Previous',
-                      style: TextStyle(fontSize: 16),
+                    child: Text(
+                      'Skip',
+                      style: TextStyle(fontSize: 16, color: Colors.white70),
                     ),
-                  )
-                else
-                  const SizedBox(width: 70),
-
-                SmoothPageIndicator(controller: _controller, count: 3),
-
-                if (currentPage != 2)
-                  GestureDetector(
-                    onTap: () {
-                      _controller.nextPage(
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeIn,
-                      );
-                    },
-                    child: const Text('Next', style: TextStyle(fontSize: 16)),
-                  )
-                else
-                  const SizedBox(width: 70),
+                  ),
               ],
             ),
           ),
