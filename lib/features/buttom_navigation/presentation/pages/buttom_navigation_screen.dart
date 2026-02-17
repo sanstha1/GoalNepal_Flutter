@@ -15,12 +15,20 @@ class ButtomNavigationScreen extends StatefulWidget {
 class _ButtomNavigationScreenState extends State<ButtomNavigationScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> bottomScreens = const [
-    HomeScreen(),
-    NewsScreen(),
-    SavedScreen(),
-    ProfileScreen(),
-  ];
+  Widget _getCurrentScreen() {
+    switch (_selectedIndex) {
+      case 0:
+        return const HomeScreen();
+      case 1:
+        return const NewsScreen();
+      case 2:
+        return const SavedScreen();
+      case 3:
+        return const ProfileScreen();
+      default:
+        return const HomeScreen();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,30 +59,81 @@ class _ButtomNavigationScreenState extends State<ButtomNavigationScreen> {
           ],
         ),
       ),
-      body: bottomScreens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: MyColors.blueGray,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.white70,
-        currentIndex: _selectedIndex,
-        type: BottomNavigationBarType.fixed,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.newspaper_outlined),
-            label: 'News',
+      body: _getCurrentScreen(),
+      floatingActionButton: Container(
+        width: 65,
+        height: 65,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: MyColors.blueGray,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 8,
+              spreadRadius: 1,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: FloatingActionButton(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          onPressed: () {},
+          child: const Icon(Icons.add, size: 32, color: Colors.white),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        color: MyColors.blueGray,
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8,
+        child: SizedBox(
+          height: 65,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavItem(Icons.home_outlined, 'Home', 0),
+              _buildNavItem(Icons.newspaper_outlined, 'News', 1),
+              const SizedBox(width: 40),
+              _buildNavItem(Icons.bookmark_outlined, 'Saved', 2),
+              _buildNavItem(Icons.person_outline, 'Profile', 3),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark_outlined),
-            label: 'Saved',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem(IconData icon, String label, int index) {
+    final isSelected = _selectedIndex == index;
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _selectedIndex = index;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? Colors.white : Colors.white60,
+              size: 24,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.white60,
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

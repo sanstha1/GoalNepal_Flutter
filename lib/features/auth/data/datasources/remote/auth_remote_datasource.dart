@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goal_nepal/core/api/api_client.dart';
 import 'package:goal_nepal/core/api/api_endpoints.dart';
@@ -61,11 +62,11 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
         data: {'email': email, 'password': password},
       );
 
-      final data = response.data;
+      final responseData = response.data;
 
-      if (data is Map<String, dynamic> &&
-          data['user'] is Map<String, dynamic>) {
-        final user = AuthApiModel.fromJson(data['user']);
+      if (responseData is Map<String, dynamic> &&
+          responseData['data'] is Map<String, dynamic>) {
+        final user = AuthApiModel.fromJson(responseData['data']);
 
         await _userSessionService.saveUserSession(
           authId: user.id!,
@@ -74,7 +75,7 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
           profileImage: user.profilePicture,
         );
 
-        final token = data['token'];
+        final token = responseData['token'];
         await _tokenService.saveToken(token);
 
         return user;
@@ -122,18 +123,41 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
         ),
       });
 
+      if (kDebugMode) {
+        print('=== UPLOAD DEBUG ===');
+      }
+      if (kDebugMode) {
+        print('Uploading to: ${ApiEndpoints.uploadProfilePicture}/$userId');
+      }
+      if (kDebugMode) {
+        print('File name: $fileName');
+      }
+
       final response = await _apiClient.post(
         '${ApiEndpoints.uploadProfilePicture}/$userId',
         data: formData,
       );
 
+      if (kDebugMode) {
+        print('Upload response status: ${response.statusCode}');
+      }
+      if (kDebugMode) {
+        print('Upload response data: ${response.data}');
+      }
+
       final data = response.data;
       if (data is Map<String, dynamic> && data['profilePicture'] != null) {
+        if (kDebugMode) {
+          print('Profile picture URL: ${data['profilePicture']}');
+        }
         return data['profilePicture'];
       }
 
       throw Exception('Failed to get profile picture URL');
     } on DioException catch (e) {
+      if (kDebugMode) {
+        print('Upload error: ${e.response?.data}');
+      }
       final data = e.response?.data;
       final message = data is Map<String, dynamic>
           ? data['message']
@@ -148,10 +172,27 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
     String profilePictureUrl,
   ) async {
     try {
+      if (kDebugMode) {
+        print('=== UPDATE DEBUG ===');
+      }
+      if (kDebugMode) {
+        print('Updating user: $userId');
+      }
+      if (kDebugMode) {
+        print('New profile picture: $profilePictureUrl');
+      }
+
       final response = await _apiClient.patch(
         '${ApiEndpoints.user}/$userId',
         data: {'profilePicture': profilePictureUrl},
       );
+
+      if (kDebugMode) {
+        print('Update response status: ${response.statusCode}');
+      }
+      if (kDebugMode) {
+        print('Update response data: ${response.data}');
+      }
 
       final data = response.data;
       if (data is Map<String, dynamic> &&
@@ -170,6 +211,9 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
 
       throw Exception('Failed to update profile picture');
     } on DioException catch (e) {
+      if (kDebugMode) {
+        print('Update error: ${e.response?.data}');
+      }
       final data = e.response?.data;
       final message = data is Map<String, dynamic>
           ? data['message']
