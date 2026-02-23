@@ -37,13 +37,28 @@ class TournamentRepository implements ITournamentRepository {
        _networkInfo = networkInfo;
 
   @override
+  Future<Either<Failure, String>> uploadBanner(File banner) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        final url = await _remoteDataSource.uploadBanner(banner);
+        return Right(url);
+      } catch (e) {
+        return Left(ApiFailure(message: e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure(message: 'No internet connection'));
+    }
+  }
+
+  @override
   Future<Either<Failure, bool>> createTournament(
-    TournamentEntity tournament,
-  ) async {
+    TournamentEntity tournament, {
+    File? bannerFile,
+  }) async {
     if (await _networkInfo.isConnected) {
       try {
         final model = TournamentApiModel.fromEntity(tournament);
-        await _remoteDataSource.createTournament(model);
+        await _remoteDataSource.createTournament(model, bannerFile: bannerFile);
         return const Right(true);
       } catch (e) {
         return Left(ApiFailure(message: e.toString()));
@@ -180,12 +195,13 @@ class TournamentRepository implements ITournamentRepository {
 
   @override
   Future<Either<Failure, bool>> updateTournament(
-    TournamentEntity tournament,
-  ) async {
+    TournamentEntity tournament, {
+    File? bannerFile,
+  }) async {
     if (await _networkInfo.isConnected) {
       try {
         final model = TournamentApiModel.fromEntity(tournament);
-        await _remoteDataSource.updateTournament(model);
+        await _remoteDataSource.updateTournament(model, bannerFile: bannerFile);
         return const Right(true);
       } catch (e) {
         return Left(ApiFailure(message: e.toString()));
@@ -201,20 +217,6 @@ class TournamentRepository implements ITournamentRepository {
       } catch (e) {
         return Left(LocalDatabaseFailure(message: e.toString()));
       }
-    }
-  }
-
-  @override
-  Future<Either<Failure, String>> uploadBanner(File banner) async {
-    if (await _networkInfo.isConnected) {
-      try {
-        final url = await _remoteDataSource.uploadBanner(banner);
-        return Right(url);
-      } catch (e) {
-        return Left(ApiFailure(message: e.toString()));
-      }
-    } else {
-      return const Left(NetworkFailure(message: 'No internet connection'));
     }
   }
 }

@@ -14,8 +14,14 @@ abstract interface class ITournamentRepository {
   Future<Either<Failure, TournamentEntity>> getTournamentById(
     String tournamentId,
   );
-  Future<Either<Failure, bool>> createTournament(TournamentEntity tournament);
-  Future<Either<Failure, bool>> updateTournament(TournamentEntity tournament);
+  Future<Either<Failure, bool>> createTournament(
+    TournamentEntity tournament, {
+    File? bannerFile,
+  });
+  Future<Either<Failure, bool>> updateTournament(
+    TournamentEntity tournament, {
+    File? bannerFile,
+  });
   Future<Either<Failure, bool>> deleteTournament(String tournamentId);
   Future<Either<Failure, String>> uploadBanner(File banner);
 }

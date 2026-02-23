@@ -10,7 +10,7 @@ import '../state/tournament_state.dart';
 import '../view_model/tournament_viewmodel.dart';
 
 class MyColors {
-  static const Color lightYellow = Color(0xFFFFFFE3);
+  static const Color lightYellow = Color(0xFFECEFF1);
   static const Color lightGray = Color(0xFFCBCBCB);
   static const Color darkGray = Color(0xFF4A4A4A);
   static const Color blueGray = Color(0xFF6D8196);
@@ -29,10 +29,6 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _locationController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  final _organizerController = TextEditingController();
-  final _prizeController = TextEditingController();
-  final _maxTeamsController = TextEditingController();
 
   DateTime? _startDate;
   DateTime? _endDate;
@@ -81,10 +77,6 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
   void dispose() {
     _titleController.dispose();
     _locationController.dispose();
-    _descriptionController.dispose();
-    _organizerController.dispose();
-    _prizeController.dispose();
-    _maxTeamsController.dispose();
     super.dispose();
   }
 
@@ -128,14 +120,11 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
   Future<void> _pickFromCamera() async {
     final hasPermission = await _requestPermission(Permission.camera);
     if (!hasPermission) return;
-
     final XFile? photo = await _imagePicker.pickImage(
       source: ImageSource.camera,
       imageQuality: 85,
     );
-    if (photo != null) {
-      setState(() => _bannerImage = photo);
-    }
+    if (photo != null) setState(() => _bannerImage = photo);
   }
 
   Future<void> _pickFromGallery() async {
@@ -144,9 +133,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
         source: ImageSource.gallery,
         imageQuality: 85,
       );
-      if (image != null) {
-        setState(() => _bannerImage = image);
-      }
+      if (image != null) setState(() => _bannerImage = image);
     } catch (e) {
       if (mounted) {
         SnackbarUtils.showError(
@@ -233,9 +220,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
     if (picked != null) {
       setState(() {
         _startDate = picked;
-        if (_endDate != null && _endDate!.isBefore(picked)) {
-          _endDate = null;
-        }
+        if (_endDate != null && _endDate!.isBefore(picked)) _endDate = null;
       });
     }
   }
@@ -247,14 +232,11 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
       firstDate: _startDate ?? DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 730)),
     );
-    if (picked != null) {
-      setState(() => _endDate = picked);
-    }
+    if (picked != null) setState(() => _endDate = picked);
   }
 
   Future<void> _handleSubmit() async {
     if (!_formKey.currentState!.validate()) return;
-
     if (_startDate == null || _endDate == null) {
       SnackbarUtils.showError(context, 'Please select start and end dates');
       return;
@@ -268,16 +250,6 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
           location: _locationController.text.trim(),
           startDate: _startDate!,
           endDate: _endDate!,
-          description: _descriptionController.text.trim().isEmpty
-              ? null
-              : _descriptionController.text.trim(),
-          organizer: _organizerController.text.trim().isEmpty
-              ? null
-              : _organizerController.text.trim(),
-          prize: _prizeController.text.trim().isEmpty
-              ? null
-              : _prizeController.text.trim(),
-          maxTeams: int.tryParse(_maxTeamsController.text),
           bannerImage: _bannerImage != null ? File(_bannerImage!.path) : null,
         );
   }
@@ -354,6 +326,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // ── Football / Futsal toggle ──────────────────────────────
                       Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
@@ -457,28 +430,24 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      const Text(
-                        'Banner Image',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: MyColors.darkGray,
-                        ),
-                      ),
+                      // ── Banner Image ──────────────────────────────────────────
+                      _buildLabel('Banner Image'),
                       const SizedBox(height: 12),
                       _buildBannerUploader(),
                       const SizedBox(height: 24),
+                      // ── Title ─────────────────────────────────────────────────
                       _buildLabel('Tournament Title'),
                       const SizedBox(height: 12),
                       _buildTextField(
                         controller: _titleController,
-                        hint: 'e.g., Kathmandu Futsal Cup 2025',
+                        hint: 'e.g., Kathmandu Cup 2025',
                         prefixIcon: Icons.emoji_events_rounded,
                         validator: (v) => (v == null || v.isEmpty)
                             ? 'Please enter tournament title'
                             : null,
                       ),
                       const SizedBox(height: 24),
+                      // ── Location ──────────────────────────────────────────────
                       _buildLabel('Location'),
                       const SizedBox(height: 12),
                       _buildTextField(
@@ -490,6 +459,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                             : null,
                       ),
                       const SizedBox(height: 24),
+                      // ── Date Range ────────────────────────────────────────────
                       _buildLabel('Date Range'),
                       const SizedBox(height: 12),
                       Row(
@@ -515,78 +485,8 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
-                      _buildLabel('Organizer'),
-                      const SizedBox(height: 12),
-                      _buildTextField(
-                        controller: _organizerController,
-                        hint: 'e.g., Nepal Football Association',
-                        prefixIcon: Icons.groups_rounded,
-                      ),
-                      const SizedBox(height: 24),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildLabel('Prize Pool'),
-                                const SizedBox(height: 12),
-                                _buildTextField(
-                                  controller: _prizeController,
-                                  hint: 'e.g., NPR 50,000',
-                                  prefixIcon: Icons.military_tech_rounded,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildLabel('Max Teams'),
-                                const SizedBox(height: 12),
-                                _buildTextField(
-                                  controller: _maxTeamsController,
-                                  hint: 'e.g., 16',
-                                  prefixIcon: Icons.people_alt_rounded,
-                                  keyboardType: TextInputType.number,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      _buildLabel('Description'),
-                      const SizedBox(height: 12),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.06),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: TextFormField(
-                          controller: _descriptionController,
-                          maxLines: 4,
-                          style: const TextStyle(color: MyColors.darkGray),
-                          decoration: const InputDecoration(
-                            hintText:
-                                'Describe the tournament rules, format, prizes...',
-                            hintStyle: TextStyle(color: MyColors.lightGray),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.all(16),
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: 32),
+                      // ── Submit Button ─────────────────────────────────────────
                       GestureDetector(
                         onTap:
                             tournamentState.status == TournamentStatus.loading
@@ -771,11 +671,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: MyColors.lightGray,
-                width: 2,
-                style: BorderStyle.solid,
-              ),
+              border: Border.all(color: MyColors.lightGray, width: 2),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -884,11 +780,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: MyColors.lightGray,
-                  width: 1.5,
-                  style: BorderStyle.solid,
-                ),
+                border: Border.all(color: MyColors.lightGray, width: 1.5),
               ),
               child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,

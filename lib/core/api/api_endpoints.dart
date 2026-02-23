@@ -11,16 +11,10 @@ class ApiEndpoints {
     if (kIsWeb) return 'localhost';
 
     if (Platform.isAndroid) {
-      const androidEmulatorHost = '10.0.2.2';
-      const physicalDeviceHost = _ipAddress;
-
-      if (kDebugMode) {
-        return androidEmulatorHost;
-      }
-      return physicalDeviceHost;
+      return _ipAddress;
     }
 
-    if (Platform.isIOS) return 'localhost';
+    if (Platform.isIOS) return _ipAddress;
 
     return 'localhost';
   }

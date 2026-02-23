@@ -17,13 +17,18 @@ abstract interface class ITournamentLocalDataSource {
 
 abstract interface class ITournamentRemoteDataSource {
   Future<String> uploadBanner(File banner);
-  Future<TournamentApiModel> createTournament(TournamentApiModel tournament);
+  Future<void> createTournament(
+    TournamentApiModel tournament, {
+    File? bannerFile,
+  });
   Future<List<TournamentApiModel>> getAllTournaments();
   Future<TournamentApiModel> getTournamentById(String tournamentId);
-  Future<List<TournamentApiModel>> getTournamentsByUser();
   Future<List<TournamentApiModel>> getMyTournaments();
   Future<List<TournamentApiModel>> getFootballTournaments();
   Future<List<TournamentApiModel>> getFutsalTournaments();
-  Future<bool> updateTournament(TournamentApiModel tournament);
-  Future<bool> deleteTournament(String tournamentId);
+  Future<void> updateTournament(
+    TournamentApiModel tournament, {
+    File? bannerFile,
+  });
+  Future<void> deleteTournament(String tournamentId);
 }

@@ -34,30 +34,55 @@ class TournamentRemoteDatasource implements ITournamentRemoteDataSource {
 
   @override
   Future<String> uploadBanner(File banner) async {
-    final fileName = banner.path.split('/').last;
-    final formData = FormData.fromMap({
-      'tournamentBanner': await MultipartFile.fromFile(
-        banner.path,
-        filename: fileName,
-      ),
-    });
-    final response = await _apiClient.uploadFile(
-      '${ApiEndpoints.tournaments}/upload-banner',
-      formData: formData,
-      options: await _authOptions,
-    );
-    return response.data['data'];
+    // No separate upload endpoint — banner is sent with createTournament
+    throw UnimplementedError('Use createTournament with bannerFile instead');
   }
 
   @override
   Future<TournamentApiModel> createTournament(
-    TournamentApiModel tournament,
-  ) async {
+    TournamentApiModel tournament, {
+    File? bannerFile,
+  }) async {
+    final token = await _tokenService.getToken();
+
+    FormData formData;
+
+    if (bannerFile != null) {
+      final fileName = bannerFile.path.split('/').last;
+      formData = FormData.fromMap({
+        'title': tournament.title,
+        'type': tournament.type,
+        'location': tournament.location,
+        'startDate': tournament.startDate.toIso8601String(),
+        'endDate': tournament.endDate.toIso8601String(),
+        if (tournament.createdBy != null) 'createdBy': tournament.createdBy,
+        'bannerImage': await MultipartFile.fromFile(
+          bannerFile.path,
+          filename: fileName,
+        ),
+      });
+    } else {
+      formData = FormData.fromMap({
+        'title': tournament.title,
+        'type': tournament.type,
+        'location': tournament.location,
+        'startDate': tournament.startDate.toIso8601String(),
+        'endDate': tournament.endDate.toIso8601String(),
+        if (tournament.createdBy != null) 'createdBy': tournament.createdBy,
+      });
+    }
+
     final response = await _apiClient.post(
       ApiEndpoints.tournaments,
-      data: tournament.toJson(),
-      options: await _authOptions,
+      data: formData,
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
     );
+
     return TournamentApiModel.fromJson(response.data['data']);
   }
 
@@ -76,7 +101,6 @@ class TournamentRemoteDatasource implements ITournamentRemoteDataSource {
     return TournamentApiModel.fromJson(response.data['data']);
   }
 
-  @override
   Future<List<TournamentApiModel>> getTournamentsByUser() async {
     final response = await _apiClient.get(
       ApiEndpoints.myTournaments,
@@ -117,11 +141,46 @@ class TournamentRemoteDatasource implements ITournamentRemoteDataSource {
   }
 
   @override
-  Future<bool> updateTournament(TournamentApiModel tournament) async {
+  Future<bool> updateTournament(
+    TournamentApiModel tournament, {
+    File? bannerFile,
+  }) async {
+    final token = await _tokenService.getToken();
+
+    FormData formData;
+
+    if (bannerFile != null) {
+      final fileName = bannerFile.path.split('/').last;
+      formData = FormData.fromMap({
+        'title': tournament.title,
+        'type': tournament.type,
+        'location': tournament.location,
+        'startDate': tournament.startDate.toIso8601String(),
+        'endDate': tournament.endDate.toIso8601String(),
+        'bannerImage': await MultipartFile.fromFile(
+          bannerFile.path,
+          filename: fileName,
+        ),
+      });
+    } else {
+      formData = FormData.fromMap({
+        'title': tournament.title,
+        'type': tournament.type,
+        'location': tournament.location,
+        'startDate': tournament.startDate.toIso8601String(),
+        'endDate': tournament.endDate.toIso8601String(),
+      });
+    }
+
     await _apiClient.put(
       ApiEndpoints.tournamentById(tournament.tournamentId!),
-      data: tournament.toJson(),
-      options: await _authOptions,
+      data: formData,
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
     );
     return true;
   }

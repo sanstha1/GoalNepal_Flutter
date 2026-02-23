@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,7 +16,7 @@ class UpdateTournamentParams extends Equatable {
   final String location;
   final DateTime startDate;
   final DateTime endDate;
-  final String? bannerImage;
+  final File? bannerImage;
   final String? createdBy;
 
   const UpdateTournamentParams({
@@ -64,11 +66,13 @@ class UpdateTournamentUsecase
       location: params.location,
       startDate: params.startDate,
       endDate: params.endDate,
-      bannerImage: params.bannerImage,
       createdBy: params.createdBy,
       updatedAt: DateTime.now(),
     );
 
-    return _repository.updateTournament(tournament);
+    return _repository.updateTournament(
+      tournament,
+      bannerFile: params.bannerImage,
+    );
   }
 }
