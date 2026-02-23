@@ -1,27 +1,24 @@
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goal_nepal/core/error/failures.dart';
 import 'package:goal_nepal/core/usecase/app_usecase.dart';
 import 'package:goal_nepal/features/tournament/data/repositories/tournament_repository.dart';
-import 'package:goal_nepal/features/tournament/domain/entities/tournament_entity.dart';
 import 'package:goal_nepal/features/tournament/domain/repositories/tournament_repository.dart';
 
-final getAllTournamentsUsecaseProvider = Provider<GetAllTournamentsUsecase>((
-  ref,
-) {
+final uploadBannerUsecaseProvider = Provider<UploadBannerUsecase>((ref) {
   final repository = ref.read(tournamentRepositoryProvider);
-  return GetAllTournamentsUsecase(repository: repository);
+  return UploadBannerUsecase(repository: repository);
 });
 
-class GetAllTournamentsUsecase
-    implements UsecaseWithoutParms<List<TournamentEntity>> {
+class UploadBannerUsecase implements UsecaseWithParms<String, File> {
   final ITournamentRepository _repository;
 
-  GetAllTournamentsUsecase({required ITournamentRepository repository})
+  UploadBannerUsecase({required ITournamentRepository repository})
     : _repository = repository;
 
   @override
-  Future<Either<Failure, List<TournamentEntity>>> call() {
-    return _repository.getAllTournaments();
+  Future<Either<Failure, String>> call(File banner) {
+    return _repository.uploadBanner(banner);
   }
 }

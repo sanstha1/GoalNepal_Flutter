@@ -4,6 +4,8 @@ import 'package:goal_nepal/features/dashboard/presentation/pages/home_screen.dar
 import 'package:goal_nepal/features/dashboard/presentation/pages/news_screen.dart';
 import 'package:goal_nepal/features/dashboard/presentation/pages/profile_screen.dart';
 import 'package:goal_nepal/features/dashboard/presentation/pages/saved_screen.dart';
+import 'package:goal_nepal/features/tournament/presentation/pages/add_tournament_page.dart'
+    hide MyColors;
 
 class ButtomNavigationScreen extends StatefulWidget {
   const ButtomNavigationScreen({super.key});
@@ -78,7 +80,14 @@ class _ButtomNavigationScreenState extends State<ButtomNavigationScreen> {
         child: FloatingActionButton(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddTournamentPage(),
+              ),
+            );
+          },
           child: const Icon(Icons.add, size: 32, color: Colors.white),
         ),
       ),
