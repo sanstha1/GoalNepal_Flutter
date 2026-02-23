@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goal_nepal/app/theme/mycolors.dart';
 import 'package:goal_nepal/features/dashboard/presentation/pages/home_screen.dart';
 import 'package:goal_nepal/features/dashboard/presentation/pages/news_screen.dart';
@@ -7,14 +8,16 @@ import 'package:goal_nepal/features/dashboard/presentation/pages/saved_screen.da
 import 'package:goal_nepal/features/tournament/presentation/pages/add_tournament_page.dart'
     hide MyColors;
 
-class ButtomNavigationScreen extends StatefulWidget {
+class ButtomNavigationScreen extends ConsumerStatefulWidget {
   const ButtomNavigationScreen({super.key});
 
   @override
-  State<ButtomNavigationScreen> createState() => _ButtomNavigationScreenState();
+  ConsumerState<ButtomNavigationScreen> createState() =>
+      _ButtomNavigationScreenState();
 }
 
-class _ButtomNavigationScreenState extends State<ButtomNavigationScreen> {
+class _ButtomNavigationScreenState
+    extends ConsumerState<ButtomNavigationScreen> {
   int _selectedIndex = 0;
 
   Widget _getCurrentScreen() {

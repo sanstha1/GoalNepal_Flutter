@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goal_nepal/core/api/api_endpoints.dart';
 
 class TournamentCard extends StatelessWidget {
   final String title;
@@ -16,6 +17,45 @@ class TournamentCard extends StatelessWidget {
     required this.onRegister,
   });
 
+  Widget _buildImage() {
+    if (imagePath.isEmpty) return _placeholder();
+
+    final url =
+        (imagePath.startsWith('http://') || imagePath.startsWith('https://'))
+        ? imagePath
+        : ApiEndpoints.tournamentBanner(imagePath);
+
+    return Image.network(
+      url,
+      height: 95,
+      width: double.infinity,
+      fit: BoxFit.cover,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return Container(
+          height: 95,
+          width: double.infinity,
+          color: Colors.grey.shade200,
+          child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        );
+      },
+      errorBuilder: (_, _, _) => _placeholder(),
+    );
+  }
+
+  Widget _placeholder() {
+    return Container(
+      height: 95,
+      width: double.infinity,
+      color: Colors.grey.shade200,
+      child: const Icon(
+        Icons.image_not_supported,
+        color: Colors.grey,
+        size: 36,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -32,12 +72,7 @@ class TournamentCard extends StatelessWidget {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(14),
                   ),
-                  child: Image.asset(
-                    imagePath,
-                    height: 95,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
+                  child: _buildImage(),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),

@@ -9,6 +9,10 @@ class TournamentEntity extends Equatable {
   final String location;
   final DateTime startDate;
   final DateTime endDate;
+  final String? organizer;
+  final String? description;
+  final String? prize;
+  final int? maxTeams;
   final String? bannerImage;
   final String? createdBy;
   final DateTime? createdAt;
@@ -21,6 +25,10 @@ class TournamentEntity extends Equatable {
     required this.location,
     required this.startDate,
     required this.endDate,
+    this.organizer,
+    this.description,
+    this.prize,
+    this.maxTeams,
     this.bannerImage,
     this.createdBy,
     this.createdAt,
@@ -35,6 +43,10 @@ class TournamentEntity extends Equatable {
     location,
     startDate,
     endDate,
+    organizer,
+    description,
+    prize,
+    maxTeams,
     bannerImage,
     createdBy,
     createdAt,

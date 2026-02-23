@@ -37,6 +37,18 @@ class TournamentHiveModel extends HiveObject {
   @HiveField(9)
   final DateTime? updatedAt;
 
+  @HiveField(10)
+  final String? organizer;
+
+  @HiveField(11)
+  final String? description;
+
+  @HiveField(12)
+  final String? prize;
+
+  @HiveField(13)
+  final int? maxTeams;
+
   TournamentHiveModel({
     String? tournamentId,
     required this.title,
@@ -44,6 +56,10 @@ class TournamentHiveModel extends HiveObject {
     required this.location,
     required this.startDate,
     required this.endDate,
+    this.organizer,
+    this.description,
+    this.prize,
+    this.maxTeams,
     this.bannerImage,
     this.createdBy,
     this.createdAt,
@@ -60,6 +76,10 @@ class TournamentHiveModel extends HiveObject {
       location: location,
       startDate: startDate,
       endDate: endDate,
+      organizer: organizer,
+      description: description,
+      prize: prize,
+      maxTeams: maxTeams,
       bannerImage: bannerImage,
       createdBy: createdBy,
       createdAt: createdAt,
@@ -75,6 +95,10 @@ class TournamentHiveModel extends HiveObject {
       location: entity.location,
       startDate: entity.startDate,
       endDate: entity.endDate,
+      organizer: entity.organizer,
+      description: entity.description,
+      prize: entity.prize,
+      maxTeams: entity.maxTeams,
       bannerImage: entity.bannerImage,
       createdBy: entity.createdBy,
       createdAt: entity.createdAt,
@@ -89,6 +113,10 @@ class TournamentHiveModel extends HiveObject {
     String? location,
     DateTime? startDate,
     DateTime? endDate,
+    String? organizer,
+    String? description,
+    String? prize,
+    int? maxTeams,
     String? bannerImage,
     String? createdBy,
     DateTime? createdAt,
@@ -101,6 +129,10 @@ class TournamentHiveModel extends HiveObject {
       location: location ?? this.location,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
+      organizer: organizer ?? this.organizer,
+      description: description ?? this.description,
+      prize: prize ?? this.prize,
+      maxTeams: maxTeams ?? this.maxTeams,
       bannerImage: bannerImage ?? this.bannerImage,
       createdBy: createdBy ?? this.createdBy,
       createdAt: createdAt ?? this.createdAt,

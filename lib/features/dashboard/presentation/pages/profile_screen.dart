@@ -34,7 +34,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     if (mounted) {
-      // ignore: use_build_context_synchronously
       Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
     }
   }
@@ -72,9 +71,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Future<bool> _requestPermission(Permission permission) async {
     final status = await permission.status;
 
-    if (status.isGranted) {
-      return true;
-    }
+    if (status.isGranted) return true;
 
     if (status.isDenied) {
       final result = await permission.request();
@@ -174,8 +171,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         await _uploadProfilePicture(File(image.path));
       }
     } catch (e) {
-      debugPrint('Gallery Error: $e');
-
       if (mounted) {
         SnackbarUtils.showError(
           context,
@@ -228,25 +223,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBEA),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFBEA),
-        elevation: 0,
-        actions: [
-          ElevatedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.edit, size: 18),
-            label: const Text("Edit"),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF6B7C93),
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-        ],
-      ),
+      appBar: AppBar(backgroundColor: const Color(0xFFFFFBEA), elevation: 0),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(

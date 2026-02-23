@@ -34,47 +34,39 @@ class TournamentRemoteDatasource implements ITournamentRemoteDataSource {
 
   @override
   Future<String> uploadBanner(File banner) async {
-    // No separate upload endpoint — banner is sent with createTournament
     throw UnimplementedError('Use createTournament with bannerFile instead');
   }
 
   @override
-  Future<TournamentApiModel> createTournament(
+  Future<void> createTournament(
     TournamentApiModel tournament, {
     File? bannerFile,
   }) async {
     final token = await _tokenService.getToken();
 
-    FormData formData;
+    final Map<String, dynamic> fields = {
+      'title': tournament.title,
+      'type': tournament.type,
+      'location': tournament.location,
+      'startDate': tournament.startDate.toIso8601String(),
+      'endDate': tournament.endDate.toIso8601String(),
+      if (tournament.organizer != null) 'organizer': tournament.organizer,
+      if (tournament.description != null) 'description': tournament.description,
+      if (tournament.prize != null) 'prize': tournament.prize,
+      if (tournament.maxTeams != null) 'maxTeams': tournament.maxTeams,
+      if (tournament.createdBy != null) 'createdBy': tournament.createdBy,
+    };
 
     if (bannerFile != null) {
-      final fileName = bannerFile.path.split('/').last;
-      formData = FormData.fromMap({
-        'title': tournament.title,
-        'type': tournament.type,
-        'location': tournament.location,
-        'startDate': tournament.startDate.toIso8601String(),
-        'endDate': tournament.endDate.toIso8601String(),
-        if (tournament.createdBy != null) 'createdBy': tournament.createdBy,
-        'bannerImage': await MultipartFile.fromFile(
-          bannerFile.path,
-          filename: fileName,
-        ),
-      });
-    } else {
-      formData = FormData.fromMap({
-        'title': tournament.title,
-        'type': tournament.type,
-        'location': tournament.location,
-        'startDate': tournament.startDate.toIso8601String(),
-        'endDate': tournament.endDate.toIso8601String(),
-        if (tournament.createdBy != null) 'createdBy': tournament.createdBy,
-      });
+      fields['bannerImage'] = await MultipartFile.fromFile(
+        bannerFile.path,
+        filename: bannerFile.path.split('/').last,
+      );
     }
 
-    final response = await _apiClient.post(
+    await _apiClient.post(
       ApiEndpoints.tournaments,
-      data: formData,
+      data: FormData.fromMap(fields),
       options: Options(
         headers: {
           'Authorization': 'Bearer $token',
@@ -82,8 +74,6 @@ class TournamentRemoteDatasource implements ITournamentRemoteDataSource {
         },
       ),
     );
-
-    return TournamentApiModel.fromJson(response.data['data']);
   }
 
   @override
@@ -99,15 +89,6 @@ class TournamentRemoteDatasource implements ITournamentRemoteDataSource {
       ApiEndpoints.tournamentById(tournamentId),
     );
     return TournamentApiModel.fromJson(response.data['data']);
-  }
-
-  Future<List<TournamentApiModel>> getTournamentsByUser() async {
-    final response = await _apiClient.get(
-      ApiEndpoints.myTournaments,
-      options: await _authOptions,
-    );
-    final data = response.data['data'] as List;
-    return data.map((json) => TournamentApiModel.fromJson(json)).toList();
   }
 
   @override
@@ -141,40 +122,34 @@ class TournamentRemoteDatasource implements ITournamentRemoteDataSource {
   }
 
   @override
-  Future<bool> updateTournament(
+  Future<void> updateTournament(
     TournamentApiModel tournament, {
     File? bannerFile,
   }) async {
     final token = await _tokenService.getToken();
 
-    FormData formData;
+    final Map<String, dynamic> fields = {
+      'title': tournament.title,
+      'type': tournament.type,
+      'location': tournament.location,
+      'startDate': tournament.startDate.toIso8601String(),
+      'endDate': tournament.endDate.toIso8601String(),
+      if (tournament.organizer != null) 'organizer': tournament.organizer,
+      if (tournament.description != null) 'description': tournament.description,
+      if (tournament.prize != null) 'prize': tournament.prize,
+      if (tournament.maxTeams != null) 'maxTeams': tournament.maxTeams,
+    };
 
     if (bannerFile != null) {
-      final fileName = bannerFile.path.split('/').last;
-      formData = FormData.fromMap({
-        'title': tournament.title,
-        'type': tournament.type,
-        'location': tournament.location,
-        'startDate': tournament.startDate.toIso8601String(),
-        'endDate': tournament.endDate.toIso8601String(),
-        'bannerImage': await MultipartFile.fromFile(
-          bannerFile.path,
-          filename: fileName,
-        ),
-      });
-    } else {
-      formData = FormData.fromMap({
-        'title': tournament.title,
-        'type': tournament.type,
-        'location': tournament.location,
-        'startDate': tournament.startDate.toIso8601String(),
-        'endDate': tournament.endDate.toIso8601String(),
-      });
+      fields['bannerImage'] = await MultipartFile.fromFile(
+        bannerFile.path,
+        filename: bannerFile.path.split('/').last,
+      );
     }
 
     await _apiClient.put(
       ApiEndpoints.tournamentById(tournament.tournamentId!),
-      data: formData,
+      data: FormData.fromMap(fields),
       options: Options(
         headers: {
           'Authorization': 'Bearer $token',
@@ -182,15 +157,13 @@ class TournamentRemoteDatasource implements ITournamentRemoteDataSource {
         },
       ),
     );
-    return true;
   }
 
   @override
-  Future<bool> deleteTournament(String tournamentId) async {
+  Future<void> deleteTournament(String tournamentId) async {
     await _apiClient.delete(
       ApiEndpoints.tournamentById(tournamentId),
       options: await _authOptions,
     );
-    return true;
   }
 }

@@ -41,5 +41,5 @@ class ApiEndpoints {
   static String tournamentById(String id) => '/tournaments/$id';
   static const String myTournaments = '/tournaments/user/my-tournaments';
   static String tournamentBanner(String filename) =>
-      '$mediaServerUrl/tournament_banners/$filename';
+      '$mediaServerUrl/$filename';
 }

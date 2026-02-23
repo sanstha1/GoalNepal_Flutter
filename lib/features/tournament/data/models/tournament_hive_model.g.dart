@@ -23,6 +23,10 @@ class TournamentHiveModelAdapter extends TypeAdapter<TournamentHiveModel> {
       location: fields[3] as String,
       startDate: fields[4] as DateTime,
       endDate: fields[5] as DateTime,
+      organizer: fields[10] as String?,
+      description: fields[11] as String?,
+      prize: fields[12] as String?,
+      maxTeams: fields[13] as int?,
       bannerImage: fields[6] as String?,
       createdBy: fields[7] as String?,
       createdAt: fields[8] as DateTime?,
@@ -33,7 +37,7 @@ class TournamentHiveModelAdapter extends TypeAdapter<TournamentHiveModel> {
   @override
   void write(BinaryWriter writer, TournamentHiveModel obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.tournamentId)
       ..writeByte(1)
@@ -53,7 +57,15 @@ class TournamentHiveModelAdapter extends TypeAdapter<TournamentHiveModel> {
       ..writeByte(8)
       ..write(obj.createdAt)
       ..writeByte(9)
-      ..write(obj.updatedAt);
+      ..write(obj.updatedAt)
+      ..writeByte(10)
+      ..write(obj.organizer)
+      ..writeByte(11)
+      ..write(obj.description)
+      ..writeByte(12)
+      ..write(obj.prize)
+      ..writeByte(13)
+      ..write(obj.maxTeams);
   }
 
   @override

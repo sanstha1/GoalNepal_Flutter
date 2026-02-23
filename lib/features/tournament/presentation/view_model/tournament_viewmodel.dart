@@ -105,6 +105,10 @@ class TournamentViewModel extends Notifier<TournamentState> {
     required String location,
     required DateTime startDate,
     required DateTime endDate,
+    String? organizer,
+    String? description,
+    String? prize,
+    int? maxTeams,
     File? bannerImage,
   }) async {
     state = state.copyWith(status: TournamentStatus.loading);
@@ -116,6 +120,10 @@ class TournamentViewModel extends Notifier<TournamentState> {
         location: location,
         startDate: startDate,
         endDate: endDate,
+        organizer: organizer,
+        description: description,
+        prize: prize,
+        maxTeams: maxTeams,
         bannerImage: bannerImage,
       ),
     );
@@ -139,6 +147,10 @@ class TournamentViewModel extends Notifier<TournamentState> {
     required String location,
     required DateTime startDate,
     required DateTime endDate,
+    String? organizer,
+    String? description,
+    String? prize,
+    int? maxTeams,
     File? bannerImage,
   }) async {
     state = state.copyWith(status: TournamentStatus.loading);
@@ -151,6 +163,10 @@ class TournamentViewModel extends Notifier<TournamentState> {
         location: location,
         startDate: startDate,
         endDate: endDate,
+        organizer: organizer,
+        description: description,
+        prize: prize,
+        maxTeams: maxTeams,
         bannerImage: bannerImage,
       ),
     );

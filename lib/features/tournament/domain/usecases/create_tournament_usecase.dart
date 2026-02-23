@@ -15,6 +15,10 @@ class CreateTournamentParams extends Equatable {
   final String location;
   final DateTime startDate;
   final DateTime endDate;
+  final String? organizer;
+  final String? description;
+  final String? prize;
+  final int? maxTeams;
   final File? bannerImage;
   final String? createdBy;
 
@@ -24,6 +28,10 @@ class CreateTournamentParams extends Equatable {
     required this.location,
     required this.startDate,
     required this.endDate,
+    this.organizer,
+    this.description,
+    this.prize,
+    this.maxTeams,
     this.bannerImage,
     this.createdBy,
   });
@@ -35,6 +43,10 @@ class CreateTournamentParams extends Equatable {
     location,
     startDate,
     endDate,
+    organizer,
+    description,
+    prize,
+    maxTeams,
     bannerImage,
     createdBy,
   ];
@@ -61,6 +73,10 @@ class CreateTournamentUsecase
       location: params.location,
       startDate: params.startDate,
       endDate: params.endDate,
+      organizer: params.organizer,
+      description: params.description,
+      prize: params.prize,
+      maxTeams: params.maxTeams,
       createdBy: params.createdBy,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),

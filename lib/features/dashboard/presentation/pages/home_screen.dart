@@ -1,71 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goal_nepal/app/theme/mycolors.dart';
 import 'package:goal_nepal/features/dashboard/presentation/widgets/filter.dart';
+import 'package:goal_nepal/features/tournament/presentation/state/tournament_state.dart';
+import 'package:goal_nepal/features/tournament/presentation/view_model/tournament_viewmodel.dart';
 import '../widgets/tournament_card.dart';
 
-class Tournament {
-  final String title;
-  final String location;
-  final String date;
-  final String image;
-
-  Tournament({
-    required this.title,
-    required this.location,
-    required this.date,
-    required this.image,
-  });
-}
-
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  final List<Tournament> tournaments = [
-    Tournament(
-      title: "Kathmandu Futsal Cup 2025",
-      location: "Kathmandu, Nepal",
-      date: "Jan 1 - Jan 14, 2026",
-      image: "assets/images/futsal.jpg",
-    ),
-    Tournament(
-      title: "Pokhara Football League 2026",
-      location: "Pokhara, Nepal",
-      date: "Feb 5 - Feb 20, 2026",
-      image: "assets/images/football.jpg",
-    ),
-    Tournament(
-      title: "Lalitpur City Cup Association",
-      location: "Lalitpur, Nepal",
-      date: "Nov 20 - Dec 10, 2025",
-      image: "assets/images/football2.jpg",
-    ),
-    Tournament(
-      title: "Chitwan Futsal Championship",
-      location: "Chitwan, Nepal",
-      date: "Apr 1 - Apr 15, 2026",
-      image: "assets/images/futsal2.jpg",
-    ),
-    Tournament(
-      title: "Butwal Open Tournament Pro",
-      location: "Butwal, Nepal",
-      date: "May 3 - May 18, 2026",
-      image: "assets/images/football3.jpg",
-    ),
-    Tournament(
-      title: "Biratnagar Premier Futsal Cup",
-      location: "Biratnagar, Nepal",
-      date: "Jun 7 - Jun 22, 2026",
-      image: "assets/images/futsal3.jpg",
-    ),
-  ];
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(tournamentViewModelProvider.notifier).getAllTournaments();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final tournamentState = ref.watch(tournamentViewModelProvider);
+
     return Scaffold(
       backgroundColor: MyColors.lightYellow,
       body: SafeArea(
@@ -97,32 +57,70 @@ class _HomeScreenState extends State<HomeScreen> {
               pinned: true,
               delegate: _SearchFilterHeader(),
             ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 20),
-              sliver: SliverGrid(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final t = tournaments[index];
-                  return TournamentCard(
-                    title: t.title,
-                    location: t.location,
-                    date: t.date,
-                    imagePath: t.image,
-                    onRegister: () {},
-                  );
-                }, childCount: tournaments.length),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  childAspectRatio: 0.72,
+            if (tournamentState.status == TournamentStatus.loading)
+              const SliverFillRemaining(
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else if (tournamentState.status == TournamentStatus.error)
+              SliverFillRemaining(
+                child: Center(
+                  child: Text(
+                    tournamentState.errorMessage ?? 'Something went wrong',
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
+              )
+            else if (tournamentState.tournaments.isEmpty)
+              const SliverFillRemaining(
+                child: Center(child: Text('No tournaments found')),
+              )
+            else
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 13,
+                  vertical: 20,
+                ),
+                sliver: SliverGrid(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final t = tournamentState.tournaments[index];
+                    return TournamentCard(
+                      title: t.title,
+                      location: t.location,
+                      date:
+                          '${t.startDate.day} ${_monthName(t.startDate.month)} - ${t.endDate.day} ${_monthName(t.endDate.month)}, ${t.endDate.year}',
+                      imagePath: t.bannerImage ?? '',
+                      onRegister: () {},
+                    );
+                  }, childCount: tournamentState.tournaments.length),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 0.72,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
     );
   }
+
+  String _monthName(int m) => const [
+    '',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ][m];
 }
 
 class _SearchFilterHeader extends SliverPersistentHeaderDelegate {
