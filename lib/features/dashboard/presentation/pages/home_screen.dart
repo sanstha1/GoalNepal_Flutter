@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goal_nepal/app/theme/mycolors.dart';
-import 'package:goal_nepal/features/dashboard/presentation/widgets/filter.dart';
+import 'package:goal_nepal/features/tournament/domain/entities/tournament_entity.dart';
 import 'package:goal_nepal/features/tournament/presentation/state/tournament_state.dart';
 import 'package:goal_nepal/features/tournament/presentation/view_model/tournament_viewmodel.dart';
 import '../widgets/tournament_card.dart';
@@ -14,6 +14,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  TournamentType? _selectedCategory;
+
   @override
   void initState() {
     super.initState();
@@ -25,6 +27,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final tournamentState = ref.watch(tournamentViewModelProvider);
+
+    final displayedTournaments = _selectedCategory == null
+        ? tournamentState.tournaments
+        : tournamentState.tournaments
+              .where((t) => t.type == _selectedCategory)
+              .toList();
 
     return Scaffold(
       backgroundColor: MyColors.lightYellow,
@@ -55,7 +63,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             SliverPersistentHeader(
               pinned: true,
-              delegate: _SearchFilterHeader(),
+              delegate: _CategoryFilterHeader(
+                selectedCategory: _selectedCategory,
+                onCategorySelected: (category) {
+                  setState(() {
+                    _selectedCategory = category;
+                  });
+                },
+              ),
             ),
             if (tournamentState.status == TournamentStatus.loading)
               const SliverFillRemaining(
@@ -70,7 +85,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
               )
-            else if (tournamentState.tournaments.isEmpty)
+            else if (displayedTournaments.isEmpty)
               const SliverFillRemaining(
                 child: Center(child: Text('No tournaments found')),
               )
@@ -82,7 +97,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 sliver: SliverGrid(
                   delegate: SliverChildBuilderDelegate((context, index) {
-                    final t = tournamentState.tournaments[index];
+                    final t = displayedTournaments[index];
                     return TournamentCard(
                       title: t.title,
                       location: t.location,
@@ -91,7 +106,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       imagePath: t.bannerImage ?? '',
                       onRegister: () {},
                     );
-                  }, childCount: tournamentState.tournaments.length),
+                  }, childCount: displayedTournaments.length),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: 12,
@@ -123,7 +138,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ][m];
 }
 
-class _SearchFilterHeader extends SliverPersistentHeaderDelegate {
+class _CategoryFilterHeader extends SliverPersistentHeaderDelegate {
+  final TournamentType? selectedCategory;
+  final Function(TournamentType?) onCategorySelected;
+
+  _CategoryFilterHeader({
+    required this.selectedCategory,
+    required this.onCategorySelected,
+  });
+
   @override
   Widget build(
     BuildContext context,
@@ -136,25 +159,28 @@ class _SearchFilterHeader extends SliverPersistentHeaderDelegate {
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: "Search tournaments...",
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.white,
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: Colors.black, width: 1),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: Colors.black, width: 1.5),
-                ),
-              ),
+            child: _CategoryButton(
+              label: 'All',
+              isSelected: selectedCategory == null,
+              onTap: () => onCategorySelected(null),
             ),
           ),
           const SizedBox(width: 10),
-          Filter(onTap: () {}),
+          Expanded(
+            child: _CategoryButton(
+              label: 'Football',
+              isSelected: selectedCategory == TournamentType.football,
+              onTap: () => onCategorySelected(TournamentType.football),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: _CategoryButton(
+              label: 'Futsal',
+              isSelected: selectedCategory == TournamentType.futsal,
+              onTap: () => onCategorySelected(TournamentType.futsal),
+            ),
+          ),
         ],
       ),
     );
@@ -167,6 +193,42 @@ class _SearchFilterHeader extends SliverPersistentHeaderDelegate {
   double get minExtent => 70;
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
-      false;
+  bool shouldRebuild(covariant _CategoryFilterHeader oldDelegate) =>
+      selectedCategory != oldDelegate.selectedCategory;
+}
+
+class _CategoryButton extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _CategoryButton({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.black : Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: Colors.black, width: 1.5),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+        ),
+      ),
+    );
+  }
 }

@@ -91,7 +91,7 @@ class _ButtomNavigationScreenState
               ),
             );
           },
-          child: const Icon(Icons.add, size: 32, color: Colors.white),
+          child: const Icon(Icons.emoji_events, size: 32, color: Colors.white),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

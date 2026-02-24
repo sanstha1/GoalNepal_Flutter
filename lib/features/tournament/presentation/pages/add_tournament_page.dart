@@ -40,22 +40,6 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
   XFile? _bannerImage;
   final ImagePicker _imagePicker = ImagePicker();
 
-  static const LinearGradient _footballGradient = LinearGradient(
-    colors: [Color(0xFF1A7C3E), Color(0xFF34C669)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient _futsalGradient = LinearGradient(
-    colors: [Color(0xFFD4760A), Color(0xFFF5A623)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  LinearGradient get _activeGradient => _selectedType == TournamentType.football
-      ? _footballGradient
-      : _futsalGradient;
-
   String _formatDate(DateTime? date) {
     if (date == null) return 'Select date';
     return '${date.day} ${_monthName(date.month)} ${date.year}';
@@ -191,7 +175,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
               ListTile(
                 leading: const Icon(
                   Icons.camera_alt_rounded,
-                  color: MyColors.blueGray,
+                  color: MyColors.darkGray,
                 ),
                 title: const Text(
                   'Open Camera',
@@ -205,7 +189,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
               ListTile(
                 leading: const Icon(
                   Icons.browse_gallery_rounded,
-                  color: MyColors.blueGray,
+                  color: MyColors.darkGray,
                 ),
                 title: const Text(
                   'Choose from Gallery',
@@ -380,9 +364,9 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                                     vertical: 16,
                                   ),
                                   decoration: BoxDecoration(
-                                    gradient:
+                                    color:
                                         _selectedType == TournamentType.football
-                                        ? _footballGradient
+                                        ? MyColors.blueGray
                                         : null,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -403,7 +387,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                                               _selectedType ==
                                                   TournamentType.football
                                               ? Colors.white
-                                              : MyColors.blueGray,
+                                              : MyColors.darkGray,
                                         ),
                                       ),
                                     ],
@@ -422,9 +406,9 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                                     vertical: 16,
                                   ),
                                   decoration: BoxDecoration(
-                                    gradient:
+                                    color:
                                         _selectedType == TournamentType.futsal
-                                        ? _futsalGradient
+                                        ? MyColors.blueGray
                                         : null,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -445,7 +429,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                                               _selectedType ==
                                                   TournamentType.futsal
                                               ? Colors.white
-                                              : MyColors.blueGray,
+                                              : MyColors.darkGray,
                                         ),
                                       ),
                                     ],
@@ -596,7 +580,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(vertical: 18),
                           decoration: BoxDecoration(
-                            gradient: _activeGradient,
+                            color: MyColors.blueGray,
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
@@ -691,7 +675,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: const TextStyle(color: MyColors.lightGray),
-          prefixIcon: Icon(prefixIcon, color: MyColors.blueGray),
+          prefixIcon: Icon(prefixIcon, color: MyColors.darkGray),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.all(16),
         ),
@@ -712,8 +696,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          gradient: isSelected ? _activeGradient : null,
-          color: isSelected ? null : Colors.white,
+          color: isSelected ? MyColors.blueGray : Colors.white,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -731,7 +714,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                 Icon(
                   icon,
                   size: 16,
-                  color: isSelected ? Colors.white70 : MyColors.blueGray,
+                  color: isSelected ? Colors.white70 : MyColors.darkGray,
                 ),
                 const SizedBox(width: 6),
                 Text(
@@ -739,7 +722,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
-                    color: isSelected ? Colors.white70 : MyColors.blueGray,
+                    color: isSelected ? Colors.white70 : MyColors.darkGray,
                   ),
                 ),
               ],
@@ -784,7 +767,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    gradient: _activeGradient,
+                    color: MyColors.blueGray,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
@@ -798,7 +781,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                   'Add Banner',
                   style: TextStyle(
                     fontSize: 11,
-                    color: MyColors.blueGray,
+                    color: MyColors.darkGray,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
