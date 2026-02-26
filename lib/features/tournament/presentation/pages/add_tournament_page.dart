@@ -304,6 +304,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                         borderRadius: BorderRadius.circular(14),
                         boxShadow: [
                           BoxShadow(
+                            // ignore: deprecated_member_use
                             color: Colors.black.withOpacity(0.06),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
@@ -345,6 +346,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
+                              // ignore: deprecated_member_use
                               color: Colors.black.withOpacity(0.06),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
@@ -551,6 +553,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
+                              // ignore: deprecated_member_use
                               color: Colors.black.withOpacity(0.06),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
@@ -584,6 +587,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
+                                // ignore: deprecated_member_use
                                 color: Colors.black.withOpacity(0.2),
                                 blurRadius: 16,
                                 offset: const Offset(0, 6),
@@ -661,6 +665,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
+            // ignore: deprecated_member_use
             color: Colors.black.withOpacity(0.06),
             blurRadius: 12,
             offset: const Offset(0, 4),
@@ -700,6 +705,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
+              // ignore: deprecated_member_use
               color: Colors.black.withOpacity(0.06),
               blurRadius: 12,
               offset: const Offset(0, 4),
@@ -818,6 +824,7 @@ class _AddTournamentPageState extends ConsumerState<AddTournamentPage> {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.transparent,
+                          // ignore: deprecated_member_use
                           Colors.black.withOpacity(0.55),
                         ],
                       ),

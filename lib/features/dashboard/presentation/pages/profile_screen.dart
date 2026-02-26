@@ -34,6 +34,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     if (mounted) {
+      // ignore: use_build_context_synchronously
       Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
     }
   }

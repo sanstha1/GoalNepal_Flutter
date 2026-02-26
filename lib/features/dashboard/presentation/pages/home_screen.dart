@@ -99,6 +99,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   delegate: SliverChildBuilderDelegate((context, index) {
                     final t = displayedTournaments[index];
                     return TournamentCard(
+                      tournament: t,
                       title: t.title,
                       location: t.location,
                       date:

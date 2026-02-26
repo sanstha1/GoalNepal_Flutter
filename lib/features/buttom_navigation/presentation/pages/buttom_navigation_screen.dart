@@ -73,6 +73,7 @@ class _ButtomNavigationScreenState
           color: MyColors.blueGray,
           boxShadow: [
             BoxShadow(
+              // ignore: deprecated_member_use
               color: Colors.black.withOpacity(0.2),
               blurRadius: 8,
               spreadRadius: 1,

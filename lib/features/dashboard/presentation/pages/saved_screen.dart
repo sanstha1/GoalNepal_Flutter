@@ -1,52 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goal_nepal/app/theme/mycolors.dart';
+import 'package:goal_nepal/core/api/api_endpoints.dart';
+import 'package:goal_nepal/features/dashboard/presentation/providers/saved_tournaments_provider.dart';
 import 'package:goal_nepal/features/dashboard/presentation/widgets/saved_tournament.dart';
 
-class SavedTournamentData {
-  final String title;
-  final String location;
-  final String date;
-  final String image;
-
-  SavedTournamentData({
-    required this.title,
-    required this.location,
-    required this.date,
-    required this.image,
-  });
-}
-
-class SavedScreen extends StatefulWidget {
+class SavedScreen extends ConsumerWidget {
   const SavedScreen({super.key});
 
   @override
-  State<SavedScreen> createState() => _SavedScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final savedTournaments = ref.watch(savedTournamentsProvider);
+    final savedNotifier = ref.read(savedTournamentsProvider.notifier);
 
-class _SavedScreenState extends State<SavedScreen> {
-  final List<SavedTournamentData> savedTournaments = [
-    SavedTournamentData(
-      title: "Kathmandu Futsal Cup 2025",
-      location: "Kathmandu, Nepal",
-      date: "Jan 1 - Jan 14, 2026",
-      image: "assets/images/futsal.jpg",
-    ),
-    SavedTournamentData(
-      title: "Pokhara Football League 2026",
-      location: "Pokhara, Nepal",
-      date: "Feb 5 - Feb 20, 2026",
-      image: "assets/images/football.jpg",
-    ),
-    SavedTournamentData(
-      title: "Lalitpur City Cup Association",
-      location: "Lalitpur, Nepal",
-      date: "Nov 20 - Dec 10, 2025",
-      image: "assets/images/football2.jpg",
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColors.lightYellow,
       body: SafeArea(
@@ -74,12 +40,10 @@ class _SavedScreenState extends State<SavedScreen> {
                 ),
               ),
             ),
-
             SliverPersistentHeader(
               pinned: true,
               delegate: _SavedSearchFilterHeader(),
             ),
-
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 20),
               sliver: savedTournaments.isEmpty
@@ -94,19 +58,21 @@ class _SavedScreenState extends State<SavedScreen> {
                   : SliverGrid(
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final t = savedTournaments[index];
+                        final imagePath = t.bannerImage ?? '';
+                        final imageUrl = imagePath.isEmpty
+                            ? ''
+                            : (imagePath.startsWith('http://') ||
+                                  imagePath.startsWith('https://'))
+                            ? imagePath
+                            : ApiEndpoints.tournamentBanner(imagePath);
                         return SavedTournament(
-                          imageUrl: t.image,
+                          imageUrl: imageUrl,
                           title: t.title,
                           location: t.location,
-                          date: t.date,
-                          onRegister: () {
-                            // TODO: navigate to register
-                          },
-                          onRemove: () {
-                            setState(() {
-                              savedTournaments.removeAt(index);
-                            });
-                          },
+                          date:
+                              '${t.startDate.day} ${_monthName(t.startDate.month)} - ${t.endDate.day} ${_monthName(t.endDate.month)}, ${t.endDate.year}',
+                          onRegister: () {},
+                          onRemove: () => savedNotifier.remove(t),
                         );
                       }, childCount: savedTournaments.length),
                       gridDelegate:
@@ -114,7 +80,7 @@ class _SavedScreenState extends State<SavedScreen> {
                             crossAxisCount: 2,
                             mainAxisSpacing: 12,
                             crossAxisSpacing: 12,
-                            childAspectRatio: 0.85,
+                            childAspectRatio: 0.82,
                           ),
                     ),
             ),
@@ -123,6 +89,22 @@ class _SavedScreenState extends State<SavedScreen> {
       ),
     );
   }
+
+  String _monthName(int m) => const [
+    '',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ][m];
 }
 
 class _SavedSearchFilterHeader extends SliverPersistentHeaderDelegate {

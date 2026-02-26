@@ -57,6 +57,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     dotHeight: 8,
                     dotWidth: 8,
                     activeDotColor: Colors.blue,
+                    // ignore: deprecated_member_use
                     dotColor: Colors.white.withOpacity(0.5),
                   ),
                 ),

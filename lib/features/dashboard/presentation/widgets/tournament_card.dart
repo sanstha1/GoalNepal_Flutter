@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goal_nepal/core/api/api_endpoints.dart';
+import 'package:goal_nepal/features/dashboard/presentation/providers/saved_tournaments_provider.dart';
+import 'package:goal_nepal/features/tournament/domain/entities/tournament_entity.dart';
 
-class TournamentCard extends StatelessWidget {
+class TournamentCard extends ConsumerWidget {
   final String title;
   final String location;
   final String date;
   final String imagePath;
   final VoidCallback onRegister;
+  final TournamentEntity tournament;
 
   const TournamentCard({
     super.key,
@@ -15,6 +19,7 @@ class TournamentCard extends StatelessWidget {
     required this.date,
     required this.imagePath,
     required this.onRegister,
+    required this.tournament,
   });
 
   Widget _buildImage() {
@@ -55,7 +60,14 @@ class TournamentCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final savedNotifier = ref.read(savedTournamentsProvider.notifier);
+    final isSaved = ref.watch(
+      savedTournamentsProvider.select(
+        (list) => list.any((t) => t.tournamentId == tournament.tournamentId),
+      ),
+    );
+
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -161,17 +173,20 @@ class TournamentCard extends StatelessWidget {
           Positioned(
             top: 8,
             right: 8,
-            child: Container(
-              height: 30,
-              width: 30,
-              decoration: BoxDecoration(
-                color: Colors.black.withAlpha((0.9 * 255).toInt()),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.bookmark_border,
-                size: 18,
-                color: Colors.white,
+            child: GestureDetector(
+              onTap: () => savedNotifier.toggle(tournament),
+              child: Container(
+                height: 30,
+                width: 30,
+                decoration: BoxDecoration(
+                  color: Colors.black.withAlpha((0.9 * 255).toInt()),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  isSaved ? Icons.bookmark : Icons.bookmark_border,
+                  size: 18,
+                  color: isSaved ? Colors.white : Colors.white,
+                ),
               ),
             ),
           ),
