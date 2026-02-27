@@ -9,13 +9,8 @@ class ApiEndpoints {
 
   static String get _host {
     if (kIsWeb) return 'localhost';
-
-    if (Platform.isAndroid) {
-      return _ipAddress;
-    }
-
+    if (Platform.isAndroid) return _ipAddress;
     if (Platform.isIOS) return _ipAddress;
-
     return 'localhost';
   }
 
@@ -42,4 +37,9 @@ class ApiEndpoints {
   static const String myTournaments = '/tournaments/user/my-tournaments';
   static String tournamentBanner(String filename) =>
       '$mediaServerUrl/$filename';
+
+  static const String registrations = '/registrations';
+  static const String myRegistrations = '/registrations/my';
+  static String tournamentRegistrations(String tournamentId) =>
+      '/registrations/tournament/$tournamentId';
 }

@@ -66,9 +66,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               delegate: _CategoryFilterHeader(
                 selectedCategory: _selectedCategory,
                 onCategorySelected: (category) {
-                  setState(() {
-                    _selectedCategory = category;
-                  });
+                  setState(() => _selectedCategory = category);
                 },
               ),
             ),
@@ -105,7 +103,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       date:
                           '${t.startDate.day} ${_monthName(t.startDate.month)} - ${t.endDate.day} ${_monthName(t.endDate.month)}, ${t.endDate.year}',
                       imagePath: t.bannerImage ?? '',
-                      onRegister: () {},
                     );
                   }, childCount: displayedTournaments.length),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goal_nepal/core/api/api_endpoints.dart';
 import 'package:goal_nepal/features/dashboard/presentation/providers/saved_tournaments_provider.dart';
+import 'package:goal_nepal/features/register/presentation/pages/register_buttom_sheet.dart';
 import 'package:goal_nepal/features/tournament/domain/entities/tournament_entity.dart';
 
 class TournamentCard extends ConsumerWidget {
@@ -9,7 +10,6 @@ class TournamentCard extends ConsumerWidget {
   final String location;
   final String date;
   final String imagePath;
-  final VoidCallback onRegister;
   final TournamentEntity tournament;
 
   const TournamentCard({
@@ -18,7 +18,6 @@ class TournamentCard extends ConsumerWidget {
     required this.location,
     required this.date,
     required this.imagePath,
-    required this.onRegister,
     required this.tournament,
   });
 
@@ -147,7 +146,10 @@ class TournamentCard extends ConsumerWidget {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: onRegister,
+                        onPressed: () => showRegistrationBottomSheet(
+                          context: context,
+                          tournament: tournament,
+                        ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           padding: const EdgeInsets.symmetric(vertical: 7),
@@ -185,7 +187,7 @@ class TournamentCard extends ConsumerWidget {
                 child: Icon(
                   isSaved ? Icons.bookmark : Icons.bookmark_border,
                   size: 18,
-                  color: isSaved ? Colors.white : Colors.white,
+                  color: Colors.white,
                 ),
               ),
             ),
