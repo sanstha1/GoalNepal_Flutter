@@ -71,19 +71,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Future<bool> _requestPermission(Permission permission) async {
     final status = await permission.status;
-
     if (status.isGranted) return true;
-
     if (status.isDenied) {
       final result = await permission.request();
       return result.isGranted;
     }
-
     if (status.isPermanentlyDenied) {
       _showPermissionDeniedDialog();
       return false;
     }
-
     return false;
   }
 
@@ -113,15 +109,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Future<void> _uploadProfilePicture(File imageFile) async {
-    setState(() {
-      _isUploading = true;
-    });
-
+    setState(() => _isUploading = true);
     try {
       await ref
           .read(authViewModelProvider.notifier)
           .uploadProfilePicture(imageFile);
-
       if (mounted) {
         SnackbarUtils.showSuccess(
           context,
@@ -133,26 +125,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         SnackbarUtils.showError(context, 'Failed to upload profile picture');
       }
     } finally {
-      setState(() {
-        _isUploading = false;
-      });
+      setState(() => _isUploading = false);
     }
   }
 
   Future<void> _pickFromCamera() async {
     final hasPermission = await _requestPermission(Permission.camera);
     if (!hasPermission) return;
-
     final XFile? photo = await _imagePicker.pickImage(
       source: ImageSource.camera,
       imageQuality: 80,
     );
-
     if (photo != null) {
-      setState(() {
-        _selectedImage = photo;
-      });
-
+      setState(() => _selectedImage = photo);
       await _uploadProfilePicture(File(photo.path));
     }
   }
@@ -163,12 +148,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         source: ImageSource.gallery,
         imageQuality: 80,
       );
-
       if (image != null) {
-        setState(() {
-          _selectedImage = image;
-        });
-
+        setState(() => _selectedImage = image);
         await _uploadProfilePicture(File(image.path));
       }
     } catch (e) {
@@ -245,7 +226,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ],
                     );
                   }
-
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -342,9 +322,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return _card(
       title: "Player Statistics",
       icon: Icons.emoji_events,
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const [
+        children: [
           _StatBox("12", "Goals"),
           _StatBox("5", "Assists"),
           _StatBox("8", "Matches"),
@@ -358,9 +338,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return _card(
       title: "Team Information",
       icon: Icons.groups,
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Text("Team Name", style: TextStyle(fontWeight: FontWeight.w600)),
           SizedBox(height: 4),
           Text("Mountain Kings", style: TextStyle(fontSize: 16)),
@@ -381,18 +361,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       child: Column(
         children: [
           _settingTile(Icons.lock, "Change Password"),
-          const Divider(),
-          _settingTile(
-            Icons.notifications,
-            "Notifications",
-            trailing: Switch(value: true, onChanged: (v) {}),
-          ),
-          const Divider(),
-          _settingTile(
-            Icons.dark_mode,
-            "Dark Mode",
-            trailing: Switch(value: false, onChanged: (v) {}),
-          ),
           const SizedBox(height: 20),
           OutlinedButton(
             onPressed: () => _showLogoutDialog(context),

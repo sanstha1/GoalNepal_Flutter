@@ -66,7 +66,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           context,
           "Registration successful! Please login.",
         );
-
         Future.delayed(const Duration(seconds: 2), () {
           if (context.mounted) {
             Navigator.pushReplacement(
@@ -76,7 +75,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           }
         });
       }
-
       if (next.status == AuthStatus.error) {
         SnackbarUtils.showError(
           context,
@@ -129,9 +127,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     isPassword: true,
                     obscure: _obscurePassword,
                     onToggle: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
+                      setState(() => _obscurePassword = !_obscurePassword);
                     },
                   ),
                   const SizedBox(height: 18),
@@ -142,9 +138,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     isPassword: true,
                     obscure: _obscureConfirmPassword,
                     onToggle: () {
-                      setState(() {
-                        _obscureConfirmPassword = !_obscureConfirmPassword;
-                      });
+                      setState(
+                        () =>
+                            _obscureConfirmPassword = !_obscureConfirmPassword,
+                      );
                     },
                   ),
                   const SizedBox(height: 30),
@@ -156,10 +153,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ? () {}
                         : _handleRegister,
                   ),
-                  const SizedBox(height: 30),
-                  _divider(),
-                  const SizedBox(height: 20),
-                  _socialRow(),
                   const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -231,35 +224,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               : null,
         ),
       ),
-    );
-  }
-
-  Widget _divider() {
-    return Row(
-      children: [
-        const SizedBox(width: 50),
-        Expanded(child: Container(height: 1, color: Colors.white38)),
-        const Text("  OR  ", style: TextStyle(color: Colors.white70)),
-        Expanded(child: Container(height: 1, color: Colors.white38)),
-        const SizedBox(width: 50),
-      ],
-    );
-  }
-
-  Widget _socialRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        GestureDetector(
-          onTap: () {},
-          child: Image.asset('assets/icons/github.png', width: 40),
-        ),
-        const SizedBox(width: 25),
-        GestureDetector(
-          onTap: () {},
-          child: Image.asset('assets/icons/google.png', width: 40),
-        ),
-      ],
     );
   }
 }

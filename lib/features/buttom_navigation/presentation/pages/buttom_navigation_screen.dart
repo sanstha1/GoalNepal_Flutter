@@ -49,19 +49,6 @@ class _ButtomNavigationScreenState
           ),
           backgroundColor: MyColors.blueGray,
           elevation: 0,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16, top: 15),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.circle_notifications,
-                  color: Colors.white,
-                  size: 30,
-                ),
-                onPressed: () {},
-              ),
-            ),
-          ],
         ),
       ),
       body: _getCurrentScreen(),

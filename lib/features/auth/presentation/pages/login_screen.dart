@@ -42,8 +42,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     if (!mounted) return;
 
     if (authenticated) {
-      // Biometric passed — log in using stored credentials or navigate directly
-      // if the user was previously authenticated (token still valid)
       final authState = ref.read(authViewModelProvider);
       if (authState.authEntity != null) {
         SnackbarUtils.showSuccess(context, "Biometric login successful!");
@@ -197,10 +195,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ],
                   const SizedBox(height: 30),
-                  _divider(),
-                  const SizedBox(height: 20),
-                  _socialRow(),
-                  const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -271,35 +265,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               : null,
         ),
       ),
-    );
-  }
-
-  Widget _divider() {
-    return Row(
-      children: [
-        const SizedBox(width: 50),
-        Expanded(child: Container(height: 1, color: Colors.white38)),
-        const Text("  OR  ", style: TextStyle(color: Colors.white70)),
-        Expanded(child: Container(height: 1, color: Colors.white38)),
-        const SizedBox(width: 50),
-      ],
-    );
-  }
-
-  Widget _socialRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        GestureDetector(
-          onTap: () {},
-          child: Image.asset('assets/icons/github.png', width: 40),
-        ),
-        const SizedBox(width: 25),
-        GestureDetector(
-          onTap: () {},
-          child: Image.asset('assets/icons/google.png', width: 40),
-        ),
-      ],
     );
   }
 }
