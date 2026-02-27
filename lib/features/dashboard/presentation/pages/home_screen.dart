@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goal_nepal/app/theme/mycolors.dart';
+import 'package:goal_nepal/core/services/sensors/shake_service.dart';
 import 'package:goal_nepal/features/tournament/domain/entities/tournament_entity.dart';
 import 'package:goal_nepal/features/tournament/presentation/state/tournament_state.dart';
 import 'package:goal_nepal/features/tournament/presentation/view_model/tournament_viewmodel.dart';
@@ -15,6 +16,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   TournamentType? _selectedCategory;
+  late final ShakeService _shakeService;
 
   @override
   void initState() {
@@ -22,6 +24,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(tournamentViewModelProvider.notifier).getAllTournaments();
     });
+
+    _shakeService = ref.read(shakeServiceProvider);
+    _shakeService.start(onShake: _onShake);
+  }
+
+  void _onShake() {
+    ref.read(tournamentViewModelProvider.notifier).getAllTournaments();
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(Icons.refresh, color: Colors.white, size: 18),
+              SizedBox(width: 8),
+              Text('Refreshing tournaments...'),
+            ],
+          ),
+          backgroundColor: Colors.black87,
+          duration: const Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _shakeService.stop();
+    super.dispose();
   }
 
   @override

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goal_nepal/features/auth/presentation/widgets/loginbutton.dart';
-import 'package:goal_nepal/features/buttom_navigation/presentation/pages/buttom_navigation_screen.dart';
-import 'package:goal_nepal/features/auth/presentation/pages/register_screen.dart';
-import 'package:goal_nepal/features/auth/presentation/view_model/auth_view_model.dart';
-import 'package:goal_nepal/features/auth/presentation/state/auth_state.dart';
+import 'package:goal_nepal/core/services/sensors/biometric_service.dart';
 import 'package:goal_nepal/core/utils/my_snackbar.dart';
+import 'package:goal_nepal/features/auth/presentation/state/auth_state.dart';
+import 'package:goal_nepal/features/auth/presentation/view_model/auth_view_model.dart';
+import 'package:goal_nepal/features/auth/presentation/widgets/loginbutton.dart';
+import 'package:goal_nepal/features/auth/presentation/pages/register_screen.dart';
+import 'package:goal_nepal/features/buttom_navigation/presentation/pages/buttom_navigation_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -17,8 +18,70 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
   bool _obscurePassword = true;
+  bool _biometricAvailable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkBiometric();
+  }
+
+  Future<void> _checkBiometric() async {
+    final available = await ref.read(biometricServiceProvider).isAvailable();
+    if (mounted) {
+      setState(() => _biometricAvailable = available);
+    }
+  }
+
+  Future<void> _handleBiometricLogin() async {
+    final authenticated = await ref
+        .read(biometricServiceProvider)
+        .authenticate();
+
+    if (!mounted) return;
+
+    if (authenticated) {
+      // Biometric passed — log in using stored credentials or navigate directly
+      // if the user was previously authenticated (token still valid)
+      final authState = ref.read(authViewModelProvider);
+      if (authState.authEntity != null) {
+        SnackbarUtils.showSuccess(context, "Biometric login successful!");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const ButtomNavigationScreen()),
+        );
+      } else {
+        SnackbarUtils.showError(
+          context,
+          "Please login with email & password first to enable biometric login.",
+        );
+      }
+    } else {
+      SnackbarUtils.showError(context, "Biometric authentication failed");
+    }
+  }
+
+  void _handleLogin() {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      SnackbarUtils.showError(context, "Please fill all fields");
+      return;
+    }
+
+    ref
+        .read(authViewModelProvider.notifier)
+        .login(email: email, password: password);
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,25 +99,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           }
         });
       }
-
       if (next.status == AuthStatus.error) {
         SnackbarUtils.showError(context, next.errorMessage ?? "Login failed");
       }
     });
-
-    void handleLogin() {
-      final email = _emailController.text.trim();
-      final password = _passwordController.text.trim();
-
-      if (email.isEmpty || password.isEmpty) {
-        SnackbarUtils.showError(context, "Please fill all fields");
-        return;
-      }
-
-      ref
-          .read(authViewModelProvider.notifier)
-          .login(email: email, password: password);
-    }
 
     return Scaffold(
       body: Container(
@@ -113,8 +161,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         : "LOGIN",
                     onPressed: authState.status == AuthStatus.loading
                         ? () {}
-                        : handleLogin,
+                        : _handleLogin,
                   ),
+                  if (_biometricAvailable) ...[
+                    const SizedBox(height: 16),
+                    GestureDetector(
+                      onTap: _handleBiometricLogin,
+                      child: Container(
+                        width: 350,
+                        height: 52,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white38, width: 1.5),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.fingerprint,
+                              color: Color(0xFFFDFCCB),
+                              size: 26,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              "Login with Biometrics",
+                              style: TextStyle(
+                                color: Color(0xFFFDFCCB),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 30),
                   _divider(),
                   const SizedBox(height: 20),
@@ -124,7 +205,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        "Don’t have an account?",
+                        "Don't have an account?",
                         style: TextStyle(color: Colors.white),
                       ),
                       GestureDetector(
@@ -184,9 +265,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     color: Colors.grey,
                   ),
                   onPressed: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
+                    setState(() => _obscurePassword = !_obscurePassword);
                   },
                 )
               : null,

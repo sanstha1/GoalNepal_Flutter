@@ -33,6 +33,10 @@ dependencies:
   equatable: ^2.0.5
   dartz: ^0.10.1
   mocktail: ^1.0.4
+  sensors_plus: ^7.0.0
+  local_auth: ^3.0.1
+  local_auth_android: ^2.0.5
+  local_auth_darwin: ^2.0.3
 
 dev_dependencies:
   flutter_test:
