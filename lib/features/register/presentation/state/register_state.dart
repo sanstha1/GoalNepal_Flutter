@@ -1,4 +1,4 @@
-enum RegistrationStatus { initial, loading, success, error }
+enum RegistrationStatus { initial, loading, success, error, idle }
 
 class RegistrationState {
   final RegistrationStatus status;
