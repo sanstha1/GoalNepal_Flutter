@@ -9,6 +9,7 @@ enum TournamentStatus {
   created,
   updated,
   deleted,
+  success,
 }
 
 class TournamentState extends Equatable {
